@@ -1,0 +1,41 @@
+{
+  "recent": [
+    {
+      "label": "English Language Basic",
+      "path": "/courses/english-language-basic",
+      "type": "Course"
+    },
+    {
+      "label": "Research Proposal Workshop",
+      "path": "/workshops",
+      "type": "Workshop"
+    },
+    {
+      "label": "Critical Education and Social Justice",
+      "path": "/research/critical-education-and-social-justice",
+      "type": "Research"
+    }
+  ],
+  "popular": [
+    {
+      "label": "Public Speaking",
+      "path": "/courses/public-speaking",
+      "type": "Course"
+    },
+    {
+      "label": "Reading Club",
+      "path": "/events",
+      "type": "Event"
+    },
+    {
+      "label": "Business English",
+      "path": "/courses/business-english",
+      "type": "Course"
+    },
+    {
+      "label": "Digital Humanities",
+      "path": "/research/digital-humanities-platforms",
+      "type": "Research"
+    }
+  ]
+}

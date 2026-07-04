@@ -1,0 +1,54 @@
+[
+  {
+    "id": "workshop-research-proposal",
+    "title": "Writing a Research Proposal",
+    "category": "Research Skills",
+    "date": "2026-08-03",
+    "time": "7:00 PM",
+    "status": "Upcoming",
+    "format": "Live online",
+    "facilitator": "HSSA Research Desk",
+    "seats": 40,
+    "priceLabel": "Free registration",
+    "summary": "A guided clinic for research questions, objectives, literature reviews, methods, and proposal structure."
+  },
+  {
+    "id": "workshop-speaking",
+    "title": "Public Speaking for Students",
+    "category": "Communication",
+    "date": "2026-08-21",
+    "time": "6:30 PM",
+    "status": "Upcoming",
+    "format": "Hybrid",
+    "facilitator": "Communication Lab",
+    "seats": 35,
+    "priceLabel": "Registration soon",
+    "summary": "Practice delivery, confidence, and argument structure with live feedback."
+  },
+  {
+    "id": "workshop-critical-reading",
+    "title": "Critical Reading Lab",
+    "category": "Reading Club",
+    "date": "2026-09-10",
+    "time": "7:30 PM",
+    "status": "Upcoming",
+    "format": "Live online",
+    "facilitator": "Reading Club Collective",
+    "seats": 50,
+    "priceLabel": "Free registration",
+    "summary": "A workshop on annotation, argument mapping, and discussion etiquette for difficult texts."
+  },
+  {
+    "id": "workshop-soft-skills",
+    "title": "Soft-Skill Development Intensive",
+    "category": "Professional Skills",
+    "date": "2026-05-18",
+    "time": "5:30 PM",
+    "status": "Past",
+    "format": "Online",
+    "facilitator": "Student Success Team",
+    "seats": 60,
+    "priceLabel": "Completed",
+    "summary": "A practical workshop on teamwork, communication, planning, and reflective self-development."
+  }
+]

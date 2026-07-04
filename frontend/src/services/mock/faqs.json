@@ -1,0 +1,18 @@
+[
+  {
+    "question": "Is registration connected to a backend now?",
+    "answer": "Not yet. Forms and registration buttons are UI-only in this frontend release and are prepared for Spring Boot integration."
+  },
+  {
+    "question": "Can course data be replaced by API responses later?",
+    "answer": "Yes. The website reads display content through mock JSON files and typed services so the data source can later become REST APIs."
+  },
+  {
+    "question": "Who can use the platform?",
+    "answer": "The public website is designed for guests, students, researchers, educators, and future registered learners."
+  },
+  {
+    "question": "Will there be certificates or payments?",
+    "answer": "Those modules are planned for future phases. The current frontend keeps the public flows ready for backend enrollment, payment, and certificate services."
+  }
+]
