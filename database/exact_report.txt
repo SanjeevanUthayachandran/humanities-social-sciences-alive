@@ -1,0 +1,2573 @@
+========================================================
+
+Schema: auth
+
+Table: users
+
+Purpose: Stores all platform users including administrators, instructors and students.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| email | CITEXT |
+| password_hash | TEXT |
+| auth_provider | auth.auth_provider |
+| email_verified | BOOLEAN |
+| email_verified_at | TIMESTAMPTZ |
+| first_name | VARCHAR(100) |
+| middle_name | VARCHAR(100) |
+| last_name | VARCHAR(100) |
+| display_name | VARCHAR(200) |
+| gender | auth.gender |
+| date_of_birth | DATE |
+| profile_image_media_id | UUID |
+| biography | TEXT |
+| phone_number | VARCHAR(30) |
+| address_line_1 | VARCHAR(255) |
+| address_line_2 | VARCHAR(255) |
+| city | VARCHAR(100) |
+| district | VARCHAR(100) |
+| province | VARCHAR(100) |
+| postal_code | VARCHAR(20) |
+| country | VARCHAR(100) |
+| account_status | auth.account_status |
+| is_active | BOOLEAN |
+| last_login_at | TIMESTAMPTZ |
+| failed_login_attempts | INTEGER |
+| locked_until | TIMESTAMPTZ |
+| employee_number | VARCHAR(50) |
+| designation | VARCHAR(150) |
+| department | VARCHAR(150) |
+| qualification | VARCHAR(255) |
+| specialization | VARCHAR(255) |
+| office_location | VARCHAR(255) |
+| office_phone | VARCHAR(50) |
+| website | TEXT |
+| google_scholar | TEXT |
+| researchgate | TEXT |
+| orcid | VARCHAR(100) |
+| linkedin | TEXT |
+| student_number | VARCHAR(50) |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: auth
+
+Table: roles
+
+Purpose: Stores all system roles used for Role-Based Access Control (RBAC).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| role_code | VARCHAR(50) |
+| role_name | VARCHAR(100) |
+| description | TEXT |
+| is_system | BOOLEAN |
+| is_active | BOOLEAN |
+| display_order | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: auth
+
+Table: permissions
+
+Purpose: Stores all permissions available in the RBAC system.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| permission_code | VARCHAR(100) |
+| permission_name | VARCHAR(150) |
+| module_name | VARCHAR(100) |
+| description | TEXT |
+| is_system | BOOLEAN |
+| is_active | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: auth
+
+Table: refresh_tokens
+
+Purpose: Stores JWT refresh tokens issued to authenticated users.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| token | TEXT |
+| device_name | VARCHAR(200) |
+| device_type | VARCHAR(100) |
+| operating_system | VARCHAR(100) |
+| browser | VARCHAR(100) |
+| ip_address | INET |
+| user_agent | TEXT |
+| expires_at | TIMESTAMPTZ |
+| revoked_at | TIMESTAMPTZ |
+| is_revoked | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: auth
+
+Table: email_verification_tokens
+
+Purpose: Stores email verification tokens for newly registered users.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| token | VARCHAR(255) |
+| expires_at | TIMESTAMPTZ |
+| verified_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: auth
+
+Table: password_reset_tokens
+
+Purpose: Stores password reset tokens used during forgot password flow.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| token | VARCHAR(255) |
+| expires_at | TIMESTAMPTZ |
+| used_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: auth
+
+Table: user_sessions
+
+Purpose: Stores all active user sessions across devices.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| refresh_token_id | UUID |
+| session_token | VARCHAR(255) |
+| ip_address | INET |
+| user_agent | TEXT |
+| browser | VARCHAR(100) |
+| browser_version | VARCHAR(100) |
+| operating_system | VARCHAR(100) |
+| device_type | VARCHAR(100) |
+| device_name | VARCHAR(200) |
+| login_at | TIMESTAMPTZ |
+| last_activity_at | TIMESTAMPTZ |
+| expires_at | TIMESTAMPTZ |
+| logout_at | TIMESTAMPTZ |
+| is_active | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: auth
+
+Table: login_history
+
+Purpose: Stores historical login attempts for auditing and security.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| email | CITEXT |
+| login_time | TIMESTAMPTZ |
+| logout_time | TIMESTAMPTZ |
+| ip_address | INET |
+| user_agent | TEXT |
+| browser | VARCHAR(100) |
+| browser_version | VARCHAR(100) |
+| operating_system | VARCHAR(100) |
+| device_type | VARCHAR(100) |
+| login_success | BOOLEAN |
+| failure_reason | VARCHAR(255) |
+| country | VARCHAR(100) |
+| city | VARCHAR(100) |
+| latitude | NUMERIC(10,7) |
+| longitude | NUMERIC(10,7) |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: auth
+
+Table: user_roles
+
+Purpose: Maps users to one or more roles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| role_id | UUID |
+| assigned_by | UUID |
+| assigned_at | TIMESTAMPTZ |
+| expires_at | TIMESTAMPTZ |
+| is_active | BOOLEAN |
+| notes | TEXT |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: auth
+
+Table: role_permissions
+
+Purpose: Maps permissions to system roles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| role_id | UUID |
+| permission_id | UUID |
+| granted_by | UUID |
+| granted_at | TIMESTAMPTZ |
+| is_active | BOOLEAN |
+| notes | TEXT |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: course_categories
+
+Purpose: Hierarchical categories used to organize educational courses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| parent_category_id | UUID |
+| name | VARCHAR(150) |
+| slug | VARCHAR(150) |
+| description | TEXT |
+| icon_media_id | UUID |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: courses
+
+Purpose: Core table for storing educational courses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| category_id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(255) |
+| subtitle | VARCHAR(500) |
+| description | TEXT |
+| language | VARCHAR(50) |
+| level | lms.course_level |
+| status | lms.course_status |
+| visibility | lms.course_visibility |
+| thumbnail_media_id | UUID |
+| banner_media_id | UUID |
+| promotional_video_id | UUID |
+| is_free | BOOLEAN |
+| price | NUMERIC(10, 2) |
+| currency | VARCHAR(3) |
+| discounted_price | NUMERIC(10, 2) |
+| duration_hours | NUMERIC(6, 2) |
+| certification_available | BOOLEAN |
+| version | INTEGER |
+| published_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| meta_title | VARCHAR(255) |
+| meta_description | TEXT |
+| meta_keywords | TEXT |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_instructors
+
+Purpose: Mapping table assigning one or more instructors to a course.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| instructor_id | UUID |
+| is_primary | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_tags
+
+Purpose: Lookup table for searchable tags to classify courses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| tag_name | VARCHAR(100) |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_tag_map
+
+Purpose: Many-to-many mapping table linking courses and tags.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| tag_id | UUID |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_resources
+
+Purpose: Supplementary materials provided at the course level (e.g., syllabus, reading lists).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| resource_type | lms.resource_type |
+| media_id | UUID |
+| external_link | TEXT |
+| is_downloadable | BOOLEAN |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_prerequisites
+
+Purpose: Tracks courses that must or should be completed before enrolling in another course.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| prerequisite_course_id | UUID |
+| is_mandatory | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_outcomes
+
+Purpose: Defines the expected learning objectives or outcomes upon completing a course.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| outcome_text | TEXT |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_reviews
+
+Purpose: Stores user ratings and feedback for educational courses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| user_id | UUID |
+| rating | INTEGER |
+| review_text | TEXT |
+| is_approved | BOOLEAN |
+| is_anonymous | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_wishlist
+
+Purpose: Stores courses that students have saved/bookmarked for later.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| user_id | UUID |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: course_announcements
+
+Purpose: Stores announcements and updates broadcast to enrolled students of a specific course.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| title | VARCHAR(255) |
+| content | TEXT |
+| is_published | BOOLEAN |
+| send_email_notification | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: modules
+
+Purpose: Logical grouping of lessons within a course (e.g., Week 1, Chapter 1).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: lessons
+
+Purpose: Stores individual lessons or learning units within a module.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| module_id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(255) |
+| description | TEXT |
+| content | TEXT |
+| lesson_type | lms.lesson_type |
+| duration_minutes | INTEGER |
+| is_free_preview | BOOLEAN |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: lesson_resources
+
+Purpose: Supplementary materials attached specifically to a lesson.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| lesson_id | UUID |
+| title | VARCHAR(255) |
+| resource_type | lms.resource_type |
+| media_id | UUID |
+| external_link | TEXT |
+| is_downloadable | BOOLEAN |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: lesson_videos
+
+Purpose: Associates video media files directly to lessons. Typically one video per VIDEO-type lesson.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| lesson_id | UUID |
+| media_id | UUID |
+| duration_seconds | INTEGER |
+| is_downloadable | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: assignments
+
+Purpose: Defines assignment tasks tied to specific lessons.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| lesson_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| instruction_media_id | UUID |
+| total_marks | INTEGER |
+| pass_marks | INTEGER |
+| deadline | TIMESTAMPTZ |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: quizzes
+
+Purpose: Defines quizzes tied to specific lessons.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| lesson_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| time_limit_minutes | INTEGER |
+| total_marks | INTEGER |
+| pass_marks | INTEGER |
+| max_attempts | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: enrollments
+
+Purpose: Tracks user enrollments in specific courses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| course_id | UUID |
+| status | lms.enrollment_status |
+| enrolled_at | TIMESTAMPTZ |
+| expires_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: course_progress
+
+Purpose: Tracks the overall completion progress for an enrollment.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| enrollment_id | UUID |
+| status | lms.progress_status |
+| completion_percentage | NUMERIC(5, 2) |
+| last_accessed_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: lesson_progress
+
+Purpose: Tracks completion of individual lessons for an enrolled student.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| enrollment_id | UUID |
+| lesson_id | UUID |
+| status | lms.progress_status |
+| completed_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: waiting_list
+
+Purpose: Maintains a queue of users waiting to enroll in unavailable courses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| user_id | UUID |
+| notified | BOOLEAN |
+| notified_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: bookmarks
+
+Purpose: Student-created bookmarks and notes mapped to specific lessons.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| lesson_id | UUID |
+| note | TEXT |
+| video_timestamp_seconds | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: completion
+
+Purpose: Permanent records of course completion events and final grades.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| enrollment_id | UUID |
+| completed_at | TIMESTAMPTZ |
+| certificate_issued | BOOLEAN |
+| grade | VARCHAR(10) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: payments
+
+Purpose: Core table for recording payment intents and their high-level status.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| amount | NUMERIC(12, 2) |
+| currency | VARCHAR(3) |
+| payment_method | payment.payment_method |
+| status | payment.payment_status |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: payment_transactions
+
+Purpose: Records individual transaction attempts (e.g., PayHere webhook responses).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| payment_id | UUID |
+| transaction_reference | VARCHAR(255) |
+| gateway_response | JSONB |
+| status | payment.payment_status |
+| gateway_name | VARCHAR(100) |
+| gateway_transaction_id | VARCHAR(255) |
+| gateway_fee | NUMERIC(10, 2) |
+| exchange_rate | NUMERIC(10, 6) |
+| payment_reference | VARCHAR(255) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: invoices
+
+Purpose: Stores official invoices/receipts generated for users.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| payment_id | UUID |
+| invoice_number | VARCHAR(50) |
+| status | payment.invoice_status |
+| total_amount | NUMERIC(12, 2) |
+| due_date | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: invoice_items
+
+Purpose: Line items for a specific invoice.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| invoice_id | UUID |
+| item_type | VARCHAR(50) |
+| item_id | UUID |
+| description | VARCHAR(255) |
+| unit_price | NUMERIC(12, 2) |
+| quantity | INTEGER |
+| total_price | NUMERIC(12, 2) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: payment_logs
+
+Purpose: Append-only log for tracing all payment state changes and webhooks.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| payment_id | UUID |
+| action_type | VARCHAR(100) |
+| log_data | JSONB |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: refunds
+
+Purpose: Tracks refunds issued against a specific payment.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| payment_id | UUID |
+| amount | NUMERIC(12, 2) |
+| reason | TEXT |
+| status | payment.payment_status |
+| processed_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: coupons
+
+Purpose: Stores promotional coupon codes applicable to purchases.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| code | VARCHAR(50) |
+| discount_type | VARCHAR(20) |
+| discount_value | NUMERIC(12, 2) |
+| max_uses | INTEGER |
+| used_count | INTEGER |
+| expires_at | TIMESTAMPTZ |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: payment
+
+Table: discount_rules
+
+Purpose: Rules for automatically applying discounts to specific courses during a timeframe.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| course_id | UUID |
+| discount_percentage | NUMERIC(5, 2) |
+| valid_from | TIMESTAMPTZ |
+| valid_until | TIMESTAMPTZ |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: certificates
+
+Purpose: Official course completion certificates awarded to students.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| course_id | UUID |
+| certificate_number | VARCHAR(100) |
+| status | lms.certificate_status |
+| issued_at | TIMESTAMPTZ |
+| media_id | UUID |
+| grade | VARCHAR(10) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: certificate_templates
+
+Purpose: Stores templates and layouts used to dynamically generate certificate PDFs.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| name | VARCHAR(100) |
+| background_media_id | UUID |
+| layout_json | JSONB |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: certificate_verification
+
+Purpose: Manages public verification data for issued certificates.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| certificate_id | UUID |
+| verification_code | VARCHAR(100) |
+| qr_code_media_id | UUID |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: certificate_downloads
+
+Purpose: Audit log tracking every time a certificate PDF is downloaded.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| certificate_id | UUID |
+| user_id | UUID |
+| downloaded_at | TIMESTAMPTZ |
+| ip_address | VARCHAR(45) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: certificate_logs
+
+Purpose: Append-only log for tracing all state changes to certificates (e.g., ISSUED, REVOKED).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| certificate_id | UUID |
+| action_type | VARCHAR(100) |
+| log_data | JSONB |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_categories
+
+Purpose: High-level classification for research projects (e.g., Sociology, Literature).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| name | VARCHAR(100) |
+| slug | VARCHAR(100) |
+| description | TEXT |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_projects
+
+Purpose: Core table for managing research initiatives, articles, and theses.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| category_id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(255) |
+| abstract | TEXT |
+| content | TEXT |
+| research_type | research.research_type |
+| status | research.research_status |
+| cover_media_id | UUID |
+| published_date | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_authors
+
+Purpose: Maps authors/contributors to a specific research project.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| project_id | UUID |
+| user_id | UUID |
+| is_primary | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_files
+
+Purpose: Attachments (documents, datasets, images) explicitly associated with a research project.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| project_id | UUID |
+| media_id | UUID |
+| title | VARCHAR(255) |
+| is_public | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_keywords
+
+Purpose: Lookup table for searchable keywords/tags assigned to research projects.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| keyword | VARCHAR(100) |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_keyword_map
+
+Purpose: Many-to-many mapping table linking research projects to keywords.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| project_id | UUID |
+| keyword_id | UUID |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_citations
+
+Purpose: Pre-formatted citation strings for a project (e.g., APA, MLA formats).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| project_id | UUID |
+| citation_format | VARCHAR(50) |
+| citation_text | TEXT |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_downloads
+
+Purpose: Audit log tracking every time a research file is downloaded.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| file_id | UUID |
+| user_id | UUID |
+| ip_address | VARCHAR(45) |
+| downloaded_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: research
+
+Table: research_reviews
+
+Purpose: Stores feedback, peer reviews, or ratings for a research project.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| project_id | UUID |
+| reviewer_id | UUID |
+| rating | INTEGER |
+| review_text | TEXT |
+| is_approved | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_categories
+
+Purpose: High-level classification for publications (e.g., Journals, Magazines).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| name | VARCHAR(100) |
+| slug | VARCHAR(100) |
+| description | TEXT |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publications
+
+Purpose: Core table for managing publications like journals, books, and articles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| category_id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(255) |
+| abstract | TEXT |
+| content | TEXT |
+| publication_type | publication.publication_type |
+| status | publication.publication_status |
+| cover_media_id | UUID |
+| published_date | TIMESTAMPTZ |
+| doi | VARCHAR(100) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_authors
+
+Purpose: Maps authors/contributors to a specific publication.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| publication_id | UUID |
+| user_id | UUID |
+| is_primary | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_files
+
+Purpose: Attachments (documents, datasets, images) explicitly associated with a publication.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| publication_id | UUID |
+| media_id | UUID |
+| title | VARCHAR(255) |
+| is_public | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_keywords
+
+Purpose: Lookup table for searchable keywords/tags assigned to publications.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| keyword | VARCHAR(100) |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_keyword_map
+
+Purpose: Many-to-many mapping table linking publications to keywords.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| publication_id | UUID |
+| keyword_id | UUID |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_citations
+
+Purpose: Pre-formatted citation strings for a publication (e.g., APA, MLA formats).
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| publication_id | UUID |
+| citation_format | VARCHAR(50) |
+| citation_text | TEXT |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_downloads
+
+Purpose: Audit log tracking every time a publication file is downloaded.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| file_id | UUID |
+| user_id | UUID |
+| ip_address | VARCHAR(45) |
+| downloaded_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_reviews
+
+Purpose: Stores feedback, peer reviews, or ratings for a publication.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| publication_id | UUID |
+| reviewer_id | UUID |
+| rating | INTEGER |
+| review_text | TEXT |
+| is_approved | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: publication
+
+Table: publication_bookmarks
+
+Purpose: Stores publications that users have saved/bookmarked for later.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| publication_id | UUID |
+| user_id | UUID |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: event
+
+Table: workshops
+
+Purpose: Core table for managing live events, workshops, and webinars.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(255) |
+| description | TEXT |
+| event_type | event.event_type |
+| status | event.event_status |
+| cover_media_id | UUID |
+| start_time | TIMESTAMPTZ |
+| end_time | TIMESTAMPTZ |
+| location_type | VARCHAR(50) |
+| location_details | TEXT |
+| registration_deadline | TIMESTAMPTZ |
+| timezone | VARCHAR(100) |
+| meeting_link | TEXT |
+| meeting_password | VARCHAR(255) |
+| max_participants | INTEGER |
+| is_free | BOOLEAN |
+| price | NUMERIC(10, 2) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_registrations
+
+Purpose: Tracks users who have signed up/registered for a specific workshop.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| workshop_id | UUID |
+| user_id | UUID |
+| status | VARCHAR(50) |
+| registered_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_sessions
+
+Purpose: Sub-events or specific scheduled talks/sessions within a larger workshop.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| workshop_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| start_time | TIMESTAMPTZ |
+| end_time | TIMESTAMPTZ |
+| speaker_id | UUID |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_speakers
+
+Purpose: Maps speakers/panelists to an overall workshop.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| workshop_id | UUID |
+| speaker_id | UUID |
+| bio | TEXT |
+| is_keynote | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_resources
+
+Purpose: Attachments (slides, handouts, PDFs) specifically associated with a workshop.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| workshop_id | UUID |
+| media_id | UUID |
+| title | VARCHAR(255) |
+| is_public | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_attendance
+
+Purpose: Tracks actual attendance (joins/leaves) of registered users in workshops/sessions.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| registration_id | UUID |
+| session_id | UUID |
+| joined_at | TIMESTAMPTZ |
+| left_at | TIMESTAMPTZ |
+| duration_minutes | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_feedback
+
+Purpose: Stores feedback and ratings provided by attendees of a workshop.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| workshop_id | UUID |
+| user_id | UUID |
+| rating | INTEGER |
+| feedback_text | TEXT |
+| is_approved | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: workshop_certificates
+
+Purpose: Stores official participation certificates awarded to workshop attendees.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| workshop_id | UUID |
+| user_id | UUID |
+| certificate_number | VARCHAR(100) |
+| media_id | UUID |
+| issued_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: events
+
+Purpose: Core table for managing general live events, conferences, and seminars.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(255) |
+| description | TEXT |
+| event_type | event.event_type |
+| status | event.event_status |
+| cover_media_id | UUID |
+| start_time | TIMESTAMPTZ |
+| end_time | TIMESTAMPTZ |
+| location_type | VARCHAR(50) |
+| location_details | TEXT |
+| registration_deadline | TIMESTAMPTZ |
+| timezone | VARCHAR(100) |
+| meeting_link | TEXT |
+| meeting_password | VARCHAR(255) |
+| max_participants | INTEGER |
+| is_free | BOOLEAN |
+| price | NUMERIC(10, 2) |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_registrations
+
+Purpose: Tracks users who have signed up/registered for a specific event.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| event_id | UUID |
+| user_id | UUID |
+| status | VARCHAR(50) |
+| registered_at | TIMESTAMPTZ |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_sessions
+
+Purpose: Sub-events or specific scheduled talks/sessions within a larger event.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| event_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| start_time | TIMESTAMPTZ |
+| end_time | TIMESTAMPTZ |
+| speaker_id | UUID |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_speakers
+
+Purpose: Maps speakers/panelists to an overall event.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| event_id | UUID |
+| speaker_id | UUID |
+| bio | TEXT |
+| is_keynote | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_resources
+
+Purpose: Attachments (slides, handouts, PDFs) specifically associated with an event.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| event_id | UUID |
+| media_id | UUID |
+| title | VARCHAR(255) |
+| is_public | BOOLEAN |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_attendance
+
+Purpose: Tracks actual attendance (joins/leaves) of registered users in events/sessions.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| registration_id | UUID |
+| session_id | UUID |
+| joined_at | TIMESTAMPTZ |
+| left_at | TIMESTAMPTZ |
+| duration_minutes | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| created_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_gallery
+
+Purpose: Photos and media specifically showcasing an event for public viewing.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| event_id | UUID |
+| media_id | UUID |
+| caption | VARCHAR(255) |
+| display_order | INTEGER |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: event
+
+Table: event_feedback
+
+Purpose: Stores feedback and ratings provided by attendees of an event.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| event_id | UUID |
+| user_id | UUID |
+| rating | INTEGER |
+| feedback_text | TEXT |
+| is_approved | BOOLEAN |
+| version | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+| created_by | UUID |
+| updated_by | UUID |
+
+========================================================
+
+Schema: lms
+
+Table: book_categories
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| parent_id | UUID |
+| name | VARCHAR(150) |
+| description | TEXT |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: books
+
+Purpose: Books available in the Reading Club.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| category_id | UUID |
+| title | VARCHAR(255) |
+| author | VARCHAR(255) |
+| isbn | VARCHAR(30) |
+| publisher | VARCHAR(255) |
+| publication_year | INTEGER |
+| language | VARCHAR(50) |
+| cover_media_id | UUID |
+| description | TEXT |
+| total_pages | INTEGER |
+| pdf_media_id | UUID |
+| external_link | TEXT |
+| is_featured | BOOLEAN |
+| is_active | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: reading_lists
+
+Purpose: User-created reading lists.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| title | VARCHAR(255) |
+| description | TEXT |
+| is_public | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: reading_list_items
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| reading_list_id | UUID |
+| book_id | UUID |
+| display_order | INTEGER |
+| added_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: book_reviews
+
+Purpose: Book ratings and reviews by users.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| book_id | UUID |
+| user_id | UUID |
+| rating | INTEGER |
+| review | TEXT |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: lms
+
+Table: book_bookmarks
+
+Purpose: Users bookmarked books.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| book_id | UUID |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: literary_categories
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| parent_id | UUID |
+| name | VARCHAR(150) |
+| slug | VARCHAR(180) |
+| description | TEXT |
+| is_active | BOOLEAN |
+| display_order | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: literary_articles
+
+Purpose: Stores literary works such as essays, poems, reviews, articles and short stories.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| category_id | UUID |
+| author_id | UUID |
+| article_type | cms.article_type |
+| status | cms.content_status |
+| title | VARCHAR(255) |
+| slug | VARCHAR(300) |
+| summary | VARCHAR(500) |
+| content | TEXT |
+| featured_image | TEXT |
+| language | VARCHAR(20) |
+| reading_time | INTEGER |
+| is_featured | BOOLEAN |
+| allow_comments | BOOLEAN |
+| view_count | INTEGER |
+| published_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: literary_tags
+
+Purpose: Tags used to classify literary content.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| name | VARCHAR(100) |
+| slug | VARCHAR(150) |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: literary_article_tags
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| article_id | UUID |
+| tag_id | UUID |
+
+========================================================
+
+Schema: cms
+
+Table: literary_comments
+
+Purpose: User comments on literary articles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| article_id | UUID |
+| user_id | UUID |
+| parent_comment_id | UUID |
+| comment | TEXT |
+| is_approved | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: literary_likes
+
+Purpose: Likes for literary articles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| article_id | UUID |
+| user_id | UUID |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: literary_bookmarks
+
+Purpose: Bookmarks for literary articles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| article_id | UUID |
+| user_id | UUID |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: news_categories
+
+Purpose: News categories.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| parent_id | UUID |
+| name | VARCHAR(150) |
+| slug | VARCHAR(180) |
+| description | TEXT |
+| color | VARCHAR(20) |
+| icon | VARCHAR(100) |
+| is_active | BOOLEAN |
+| display_order | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: news
+
+Purpose: Stores news articles published by HSSA.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| category_id | UUID |
+| author_id | UUID |
+| title | VARCHAR(255) |
+| slug | VARCHAR(300) |
+| summary | VARCHAR(500) |
+| content | TEXT |
+| featured_image | TEXT |
+| status | cms.news_status |
+| is_featured | BOOLEAN |
+| allow_comments | BOOLEAN |
+| view_count | INTEGER |
+| published_at | TIMESTAMPTZ |
+| expires_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: announcements
+
+Purpose: Stores official announcements.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| author_id | UUID |
+| title | VARCHAR(255) |
+| content | TEXT |
+| priority | VARCHAR(20) |
+| publish_date | TIMESTAMPTZ |
+| expiry_date | TIMESTAMPTZ |
+| is_public | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: news_tags
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| name | VARCHAR(100) |
+| slug | VARCHAR(150) |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: news_tag_map
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| news_id | UUID |
+| tag_id | UUID |
+
+========================================================
+
+Schema: cms
+
+Table: news_comments
+
+Purpose: Comments on news articles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| news_id | UUID |
+| user_id | UUID |
+| parent_comment_id | UUID |
+| comment | TEXT |
+| is_approved | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: news_likes
+
+Purpose: Likes on news articles.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| news_id | UUID |
+| user_id | UUID |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: notification
+
+Table: notifications
+
+Purpose: Stores notifications sent to users.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| sender_id | UUID |
+| recipient_id | UUID |
+| notification_type | notification.notification_type |
+| title | VARCHAR(255) |
+| message | TEXT |
+| action_url | TEXT |
+| image_media_id | UUID |
+| status | notification.notification_status |
+| is_email_sent | BOOLEAN |
+| is_push_sent | BOOLEAN |
+| is_sms_sent | BOOLEAN |
+| expires_at | TIMESTAMPTZ |
+| read_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: notification
+
+Table: notification_templates
+
+Purpose: Notification templates used throughout the platform.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| template_code | VARCHAR(100) |
+| title_template | VARCHAR(255) |
+| message_template | TEXT |
+| notification_type | notification.notification_type |
+| is_active | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: notification
+
+Table: user_notification_settings
+
+Purpose: Stores notification preferences for each user.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| email_enabled | BOOLEAN |
+| push_enabled | BOOLEAN |
+| sms_enabled | BOOLEAN |
+| course_notifications | BOOLEAN |
+| payment_notifications | BOOLEAN |
+| certificate_notifications | BOOLEAN |
+| workshop_notifications | BOOLEAN |
+| event_notifications | BOOLEAN |
+| news_notifications | BOOLEAN |
+| announcement_notifications | BOOLEAN |
+| system_notifications | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: notification
+
+Table: notification_logs
+
+Purpose: Delivery log for notification channels.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| notification_id | UUID |
+| delivery_channel | VARCHAR(30) |
+| delivery_status | VARCHAR(30) |
+| sent_at | TIMESTAMPTZ |
+| error_message | TEXT |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: contact_messages
+
+Purpose: Stores messages submitted through the Contact Us page.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| full_name | VARCHAR(200) |
+| email | CITEXT |
+| phone_number | VARCHAR(30) |
+| subject | VARCHAR(255) |
+| inquiry_type | VARCHAR(50) |
+| message | TEXT |
+| status | cms.message_status |
+| priority | VARCHAR(50) |
+| assigned_at | TIMESTAMPTZ |
+| closed_at | TIMESTAMPTZ |
+| resolved_by | UUID |
+| assigned_to | UUID |
+| replied_by | UUID |
+| reply_message | TEXT |
+| replied_at | TIMESTAMPTZ |
+| ip_address | INET |
+| user_agent | TEXT |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: newsletter_subscribers
+
+Purpose: Stores newsletter subscribers.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| email | CITEXT |
+| full_name | VARCHAR(200) |
+| is_active | BOOLEAN |
+| subscribed_at | TIMESTAMPTZ |
+| unsubscribed_at | TIMESTAMPTZ |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: contact_faq
+
+Purpose: Frequently asked questions displayed on the Contact page.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| question | VARCHAR(500) |
+| answer | TEXT |
+| display_order | INTEGER |
+| is_active | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: cms
+
+Table: contact_offices
+
+Purpose: Stores office contact information and locations.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| office_name | VARCHAR(200) |
+| address | TEXT |
+| phone | VARCHAR(50) |
+| email | CITEXT |
+| opening_hours | VARCHAR(255) |
+| google_map_url | TEXT |
+| latitude | NUMERIC(10,7) |
+| longitude | NUMERIC(10,7) |
+| is_head_office | BOOLEAN |
+| is_active | BOOLEAN |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: media
+
+Table: media_folders
+
+Purpose: Logical folder structure for media files.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| parent_id | UUID |
+| folder_name | VARCHAR(200) |
+| folder_path | TEXT |
+| description | TEXT |
+| created_by | UUID |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: media
+
+Table: media_files
+
+Purpose: Central media repository for all uploaded files.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| folder_id | UUID |
+| uploaded_by | UUID |
+| media_type | media.media_type |
+| storage_provider | media.storage_provider |
+| original_name | VARCHAR(255) |
+| stored_name | VARCHAR(255) |
+| file_extension | VARCHAR(20) |
+| mime_type | VARCHAR(100) |
+| file_size | BIGINT |
+| file_url | TEXT |
+| thumbnail_url | TEXT |
+| width | INTEGER |
+| height | INTEGER |
+| duration_seconds | INTEGER |
+| checksum | VARCHAR(255) |
+| alt_text | VARCHAR(255) |
+| caption | TEXT |
+| is_public | BOOLEAN |
+| download_count | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+| deleted_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: media
+
+Table: media_tags
+
+Purpose: Tags used to classify media files.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| tag_name | VARCHAR(100) |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: media
+
+Table: media_tag_map
+
+Purpose: No description available.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| media_id | UUID |
+| tag_id | UUID |
+
+========================================================
+
+Schema: media
+
+Table: media_downloads
+
+Purpose: Tracks downloads of media files.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| media_id | UUID |
+| user_id | UUID |
+| downloaded_at | TIMESTAMPTZ |
+| ip_address | INET |
+
+========================================================
+
+Schema: audit
+
+Table: audit_logs
+
+Purpose: Stores all user and system audit events.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| action | audit.audit_action |
+| module_name | VARCHAR(100) |
+| table_name | VARCHAR(100) |
+| record_id | UUID |
+| description | TEXT |
+| old_data | JSONB |
+| new_data | JSONB |
+| ip_address | INET |
+| user_agent | TEXT |
+| request_method | VARCHAR(10) |
+| request_uri | TEXT |
+| http_status | INTEGER |
+| execution_time_ms | INTEGER |
+| session_id | UUID |
+| created_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: audit
+
+Table: audit_settings
+
+Purpose: Defines audit configuration for each module.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| module_name | VARCHAR(100) |
+| audit_enabled | BOOLEAN |
+| store_old_values | BOOLEAN |
+| store_new_values | BOOLEAN |
+| retention_days | INTEGER |
+| created_at | TIMESTAMPTZ |
+| updated_at | TIMESTAMPTZ |
+
+========================================================
+
+Schema: audit
+
+Table: audit_login_events
+
+Purpose: Stores authentication login events for security analysis.
+
+| Column Name | Data Type |
+|-------------|-----------|
+| id | UUID |
+| user_id | UUID |
+| email | CITEXT |
+| login_success | BOOLEAN |
+| ip_address | INET |
+| user_agent | TEXT |
+| created_at | TIMESTAMPTZ |
+
+========================================================
