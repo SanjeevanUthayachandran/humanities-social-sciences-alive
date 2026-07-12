@@ -1,0 +1,1 @@
+package com.hssa.common.validator; public class FileNameValidator { public static boolean isValid(String fileName) { return fileName != null && !fileName.contains("..") && !fileName.contains("/") && !fileName.contains("\\"); } }

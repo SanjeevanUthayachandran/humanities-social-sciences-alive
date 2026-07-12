@@ -1,0 +1,1 @@
+package com.hssa.common.util; import java.util.UUID; public final class UUIDUtils { private UUIDUtils() {} public static boolean isValid(String uuid) { try { UUID.fromString(uuid); return true; } catch (Exception e) { return false; } } }

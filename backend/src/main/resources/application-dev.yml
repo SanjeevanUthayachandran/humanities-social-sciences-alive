@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hssa_db
+    username: postgres
+    password: Sanjeevan2002
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+    com.hssa: DEBUG

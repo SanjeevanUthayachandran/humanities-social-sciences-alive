@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: hssa-backend
+  profiles:
+    active: dev
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hssa_db
+    username: postgres
+    password: Sanjeevan2002
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    root: INFO
+    com.hssa: DEBUG
