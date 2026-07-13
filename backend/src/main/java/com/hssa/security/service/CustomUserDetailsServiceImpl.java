@@ -1,15 +1,1 @@
-package com.hssa.security.service;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
-@Service
-public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Implementation belongs to the Authentication module
-        throw new UsernameNotFoundException("User not found: " + username);
-    }
-}
+package com.hssa.security.service; import com.hssa.auth.entity.Permission; import com.hssa.auth.entity.Role; import com.hssa.auth.entity.User; import com.hssa.auth.repository.UserRepository; import com.hssa.security.dto.CustomUserDetails; import org.springframework.security.core.GrantedAuthority; import org.springframework.security.core.authority.SimpleGrantedAuthority; import org.springframework.security.core.userdetails.UserDetails; import org.springframework.security.core.userdetails.UserDetailsService; import org.springframework.security.core.userdetails.UsernameNotFoundException; import org.springframework.stereotype.Service; import java.util.HashSet; import java.util.Set; @Service public class CustomUserDetailsServiceImpl implements CustomUserDetailsService { private final UserRepository userRepository; public CustomUserDetailsServiceImpl(UserRepository userRepository) { this.userRepository = userRepository; } @Override public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username)); Set<GrantedAuthority> authorities = new HashSet<>(); for (Role role : user.getRoles()) { authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleCode())); for (Permission permission : role.getPermissions()) { authorities.add(new SimpleGrantedAuthority(permission.getPermissionCode())); } } return CustomUserDetails.builder().id(user.getId()).email(user.getEmail()).username(user.getEmail()).password(user.getPasswordHash()).authorities(authorities).enabled(user.isActive()).build(); } }

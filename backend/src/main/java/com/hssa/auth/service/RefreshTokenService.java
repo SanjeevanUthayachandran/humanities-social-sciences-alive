@@ -1,0 +1,1 @@
+package com.hssa.auth.service; import com.hssa.auth.entity.RefreshToken; import java.util.UUID; public interface RefreshTokenService { RefreshToken createRefreshToken(UUID userId); RefreshToken verifyExpiration(RefreshToken token); void revokeAllUserTokens(UUID userId); }
