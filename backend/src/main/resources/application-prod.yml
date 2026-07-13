@@ -1,13 +1,24 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:hssa_db}
     username: ${DB_USER}
     password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: false
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://hssa.com}
+  allow-credentials: true
 
 logging:
   level:

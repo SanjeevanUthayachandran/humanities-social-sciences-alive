@@ -1,27 +1,40 @@
 spring:
   application:
-    name: hssa-backend
+    name: Humanities & Social Sciences Alive
   profiles:
     active: dev
-  
-  datasource:
-    url: jdbc:postgresql://localhost:5432/hssa_db
-    username: postgres
-    password: Sanjeevan2002
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  jackson:
+    default-property-inclusion: non_null
 
 server:
   port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
 
 logging:
-  config: classpath:logback-spring.xml
   level:
     root: INFO
     com.hssa: DEBUG
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: false
+  max-age: 3600
+
+swagger:
+  server:
+    url: http://localhost:8080
+
+async:
+  core-pool-size: 5
+  max-pool-size: 10
+  queue-capacity: 25
+
+cache:
+  type: simple
+
+app:
+  timezone: UTC

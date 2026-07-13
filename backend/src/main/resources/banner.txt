@@ -1,4 +1,6 @@
 =========================================================
 Humanities & Social Sciences Alive Backend
 Version: 0.0.1-SNAPSHOT
+Spring Boot: ${spring-boot.version}
+Java Version: ${java.version}
 =========================================================
