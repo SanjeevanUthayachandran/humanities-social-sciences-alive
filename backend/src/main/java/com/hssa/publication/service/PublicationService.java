@@ -6,6 +6,7 @@ import com.hssa.publication.dto.request.AddAuthorRequest;
 import com.hssa.publication.dto.response.PublicationDetailResponse;
 import com.hssa.publication.dto.response.PublicationAuthorResponse;
 import com.hssa.publication.dto.response.PublicationSummaryResponse;
+import com.hssa.publication.dto.response.PublicationStatisticsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,7 +20,9 @@ public interface PublicationService {
     void archivePublication(UUID publicationId);
     void restorePublication(UUID publicationId);
     PublicationDetailResponse getPublication(UUID publicationId);
+    Page<PublicationSummaryResponse> listPublications(Pageable pageable);
     Page<PublicationSummaryResponse> searchPublication(String title, String category, String status, String doi, Pageable pageable);
+    PublicationStatisticsResponse getStatistics();
     
     // Author Management
     List<PublicationAuthorResponse> getAuthors(UUID publicationId);

@@ -10,6 +10,7 @@ import com.hssa.publication.dto.request.UpdatePublicationRequest;
 import com.hssa.publication.dto.response.PublicationDetailResponse;
 import com.hssa.publication.dto.response.PublicationAuthorResponse;
 import com.hssa.publication.dto.response.PublicationSummaryResponse;
+import com.hssa.publication.dto.response.PublicationStatisticsResponse;
 import com.hssa.publication.entity.*;
 import com.hssa.publication.enums.PublicationStatus;
 import com.hssa.publication.event.*;
@@ -165,6 +166,21 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<PublicationSummaryResponse> listPublications(Pageable pageable) {
+        return publicationRepository.findAll(
+                PublicationSpecification.filterBy(null, null, null), pageable)
+                .map(p -> PublicationSummaryResponse.builder()
+                        .id(p.getId())
+                        .title(p.getTitle())
+                        .categoryName(p.getCategory().getName())
+                        .status(p.getStatus().name())
+                        .publicationType(p.getPublicationType().name())
+                        .publishedDate(p.getPublishedDate())
+                        .build());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<PublicationSummaryResponse> searchPublication(String title, String category, String status, String doi, Pageable pageable) {
         Page<Publication> publications = publicationRepository.findAll(
                 PublicationSpecification.filterBy(title, status, doi), pageable);
@@ -224,6 +240,21 @@ public class PublicationServiceImpl implements PublicationService {
         authorRepository.delete(author);
 
         eventPublisher.publishEvent(new AuthorRemovedEvent(this, publicationId, authorId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PublicationStatisticsResponse getStatistics() {
+        long total = publicationRepository.count();
+        long drafts = publicationRepository.findAll(PublicationSpecification.filterBy(null, "DRAFT", null), Pageable.unpaged()).getTotalElements();
+        long published = publicationRepository.findAll(PublicationSpecification.filterBy(null, "PUBLISHED", null), Pageable.unpaged()).getTotalElements();
+        long archived = publicationRepository.findAll(PublicationSpecification.filterBy(null, "ARCHIVED", null), Pageable.unpaged()).getTotalElements();
+        return PublicationStatisticsResponse.builder()
+                .totalPublications(total)
+                .totalDrafts(drafts)
+                .totalPublished(published)
+                .totalArchived(archived)
+                .build();
     }
 
     private void syncKeywords(Publication publication, List<String> keywords) {

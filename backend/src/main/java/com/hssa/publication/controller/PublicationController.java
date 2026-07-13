@@ -6,6 +6,7 @@ import com.hssa.publication.dto.request.UpdatePublicationRequest;
 import com.hssa.publication.dto.response.PublicationDetailResponse;
 import com.hssa.publication.dto.response.PublicationAuthorResponse;
 import com.hssa.publication.dto.response.PublicationSummaryResponse;
+import com.hssa.publication.dto.response.PublicationStatisticsResponse;
 import com.hssa.publication.service.PublicationService;
 import com.hssa.auth.entity.User;
 import jakarta.validation.Valid;
@@ -28,6 +29,11 @@ public class PublicationController {
 
     private final PublicationService publicationService;
 
+    @GetMapping
+    public ResponseEntity<Page<PublicationSummaryResponse>> listPublications(Pageable pageable) {
+        return ResponseEntity.ok(publicationService.listPublications(pageable));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     public ResponseEntity<PublicationDetailResponse> createPublication(
@@ -41,6 +47,14 @@ public class PublicationController {
     public ResponseEntity<PublicationDetailResponse> updatePublication(
             @PathVariable UUID id,
             @Valid @RequestBody UpdatePublicationRequest request) {
+        return ResponseEntity.ok(publicationService.updatePublication(id, request));
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('INSTRUCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<PublicationDetailResponse> patchPublication(
+            @PathVariable UUID id,
+            @RequestBody UpdatePublicationRequest request) {
         return ResponseEntity.ok(publicationService.updatePublication(id, request));
     }
 
@@ -78,6 +92,11 @@ public class PublicationController {
             @RequestParam(required = false) String doi,
             Pageable pageable) {
         return ResponseEntity.ok(publicationService.searchPublication(title, category, status, doi, pageable));
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<PublicationStatisticsResponse> getStatistics() {
+        return ResponseEntity.ok(publicationService.getStatistics());
     }
 
     @GetMapping("/{id}/authors")
