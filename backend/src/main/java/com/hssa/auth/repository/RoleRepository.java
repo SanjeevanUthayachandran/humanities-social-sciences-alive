@@ -1,1 +1,12 @@
-package com.hssa.auth.repository; import com.hssa.auth.entity.Role; import org.springframework.data.jpa.repository.JpaRepository; import java.util.Optional; import java.util.UUID; public interface RoleRepository extends JpaRepository<Role, UUID> { Optional<Role> findByRoleCode(String roleCode); }
+package com.hssa.auth.repository;
+
+import com.hssa.auth.entity.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface RoleRepository extends JpaRepository<Role, UUID> {
+    Optional<Role> findByRoleCode(String roleCode);
+    List<Role> findByRoleCodeIn(List<String> roleCodes);
+}
