@@ -526,4 +526,4 @@ Wait for approval.
 
 Next Module
 
-08_USER_MANAGEMENT.md
+08_IDENTITY_PROFILE.md
