@@ -1,4 +1,4 @@
-﻿package com.hssa.readingclub.controller;
+package com.hssa.readingclub.controller;
 
 import com.hssa.readingclub.dto.response.BookSummaryResponse;
 import com.hssa.readingclub.service.BookService;
