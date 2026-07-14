@@ -51,7 +51,26 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/webjars/**",
                                 "/swagger-ui.html",
-                                "/actuator/health"
+                                "/actuator/health",
+                                // Public API endpoints
+                                "/api/v1/dashboard/public",
+                                "/api/v1/contact/faqs",
+                                "/api/v1/contact/offices",
+                                "/api/v1/newsletter/**"
+                        ).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/contact/messages").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET,
+                                "/api/v1/courses",
+                                "/api/v1/courses/{id}",
+                                "/api/v1/events",
+                                "/api/v1/events/{id}",
+                                "/api/v1/workshops",
+                                "/api/v1/workshops/{id}",
+                                "/api/v1/literary/**",
+                                "/api/v1/readingclub/books",
+                                "/api/v1/readingclub/books/{id}",
+                                "/api/v1/research/**",
+                                "/api/v1/publications/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
