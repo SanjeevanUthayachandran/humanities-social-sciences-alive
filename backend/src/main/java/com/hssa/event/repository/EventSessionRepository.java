@@ -1,0 +1,11 @@
+package com.hssa.event.repository;
+
+import com.hssa.event.entity.EventSession;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface EventSessionRepository extends JpaRepository<EventSession, UUID> {
+    List<EventSession> findByEventIdOrderByStartTimeAsc(UUID eventId);
+}
