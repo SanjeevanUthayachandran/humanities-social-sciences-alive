@@ -164,6 +164,15 @@ public class ResearchServiceImpl implements ResearchService {
 
     @Override
     @Transactional(readOnly = true)
+    public ResearchDetailResponse getResearchBySlug(String slug) {
+        ResearchProject project = projectRepository.findBySlugAndDeletedAtIsNull(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Research project not found"));
+
+        return buildDetailResponse(project);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<ResearchSummaryResponse> searchResearch(String title, String category, String status, String keyword, Pageable pageable) {
         Page<ResearchProject> projects = projectRepository.findAll(
                 ResearchSpecification.filterBy(title, status, keyword, null, null), pageable);
@@ -171,6 +180,8 @@ public class ResearchServiceImpl implements ResearchService {
         return projects.map(p -> ResearchSummaryResponse.builder()
                 .id(p.getId())
                 .title(p.getTitle())
+                .slug(p.getSlug())
+                .abstractText(p.getAbstractText())
                 .categoryName(p.getCategory().getName())
                 .status(p.getStatus().name())
                 .researchType(p.getResearchType().name())

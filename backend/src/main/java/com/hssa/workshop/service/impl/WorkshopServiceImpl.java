@@ -217,14 +217,17 @@ public class WorkshopServiceImpl implements WorkshopService {
                 .id(w.getId())
                 .title(w.getTitle())
                 .slug(w.getSlug())
+                .description(w.getDescription())
                 .eventType(w.getEventType().name())
                 .status(w.getStatus().name())
                 .locationType(w.getLocationType())
+                .locationDetails(w.getLocationDetails())
                 .startTime(w.getStartTime())
                 .endTime(w.getEndTime())
                 .isFree(w.getIsFree())
                 .price(w.getPrice())
                 .maxParticipants(w.getMaxParticipants())
+                .organizerName(w.getCreatedBy() != null ? w.getCreatedBy().getFirstName() + " " + w.getCreatedBy().getLastName() : null)
                 .build();
     }
 }

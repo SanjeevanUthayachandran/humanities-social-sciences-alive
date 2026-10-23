@@ -11,6 +11,8 @@ import java.util.UUID;
 public class ResearchSummaryResponse {
     private UUID id;
     private String title;
+    private String slug;
+    private String abstractText;
     private String categoryName;
     private String status;
     private String researchType;

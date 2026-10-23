@@ -198,20 +198,50 @@ git clone https://github.com/YOUR_USERNAME/humanities-social-sciences-alive.git
 
 ## Frontend
 
-```bash
+```powershell
 cd frontend
+Copy-Item .env.example .env
 npm install
 npm run dev
 ```
+
+The frontend uses `VITE_API_BASE_URL` as the Spring Boot API root. For local development it defaults to `http://localhost:8080/api/v1`.
+
+---
+
+## Database
+
+Start the local PostgreSQL service first (the installed service name may differ):
+
+```powershell
+Get-Service postgresql*
+Start-Service postgresql-x64-17
+```
+
+For an existing HSSA database, apply the repeatable backend compatibility migration:
+
+```powershell
+$env:PGPASSWORD = "your-postgres-password"
+& "C:\Program Files\PostgreSQL\17\bin\psql.exe" -h localhost -U postgres -d hssa_db -v ON_ERROR_STOP=1 -f database/12_backend_compatibility.sql
+```
+
+For a new database, execute the SQL files in the order documented in `database/README.md`. Be aware that `database/01_database.sql` drops and recreates `hssa_db` and therefore deletes an existing development database.
 
 ---
 
 ## Backend
 
-```bash
+Open a second PowerShell terminal. The backend reads the database password from the environment; `.env` files are not loaded automatically by Spring Boot.
+
+```powershell
 cd backend
-./mvnw spring-boot:run
+$env:DB_PASSWORD = "your-postgres-password"
+mvn spring-boot:run
 ```
+
+The API runs at `http://localhost:8080/api/v1` and Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
+
+Run the frontend in a third terminal after the backend is ready. Vite normally serves it at `http://localhost:5173`.
 
 ---
 

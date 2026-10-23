@@ -7,12 +7,17 @@ import SectionHeader from "@/components/common/SectionHeader";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import { popularTopics, recentSearches } from "@/services/contentService";
 import { buildSearchIndex, filterSearchResults } from "@/utils/search";
-import { useState } from "react";
-
-const searchIndex = buildSearchIndex();
+import { useMemo, useState } from "react";
+import { useContent } from "@/hooks/useContent";
+import { newsItems } from "@/services/contentService";
 
 export default function SearchPage() {
+  const { courses, researchItems, workshops, events } = useContent();
   const [query, setQuery] = useState("");
+  const searchIndex = useMemo(
+    () => buildSearchIndex({ courses, researchItems, workshops, events, newsItems }),
+    [courses, researchItems, workshops, events],
+  );
   const results = filterSearchResults(searchIndex, query);
 
   return (
@@ -20,7 +25,7 @@ export default function SearchPage() {
       <PageBanner
         eyebrow="Search"
         title="Search courses, research, workshops, events, and news."
-        description="A global search page using a local mock index today and ready for a backend search endpoint later."
+        description="Search the live course, research, workshop, and event catalogue in one place."
       />
 
       <section className="py-16 sm:py-20">
@@ -41,7 +46,7 @@ export default function SearchPage() {
               <SectionHeader
                 eyebrow="Results"
                 title={query ? `Results for "${query}"` : "Popular results"}
-                description={`${results.length} matching items from the mock search index.`}
+                description={`${results.length} matching items from the site index.`}
                 className="mb-6"
               />
               {results.length > 0 ? (

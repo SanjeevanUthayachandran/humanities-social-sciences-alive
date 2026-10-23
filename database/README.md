@@ -227,15 +227,17 @@ Execute SQL files in the following order.
 
 06_indexes.sql
 
-11_functions.sql
+07_functions.sql
 
-07_triggers.sql
+08_triggers.sql
 
-08_seed_roles.sql
+09_seed_roles.sql
 
-09_seed_admin.sql
+10_seed_admin.sql
 
-10_views.sql
+11_views.sql
+
+12_backend_compatibility.sql
 ```
 
 ---

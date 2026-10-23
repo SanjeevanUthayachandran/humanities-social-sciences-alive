@@ -70,6 +70,11 @@ public class ResearchController {
         return ResponseEntity.ok(researchService.getResearch(id));
     }
 
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<ResearchDetailResponse> getResearchBySlug(@PathVariable String slug) {
+        return ResponseEntity.ok(researchService.getResearchBySlug(slug));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Page<ResearchSummaryResponse>> searchResearch(
             @RequestParam(required = false) String title,

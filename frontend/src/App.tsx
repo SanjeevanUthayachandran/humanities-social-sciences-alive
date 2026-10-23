@@ -1,7 +1,12 @@
 import AppRouter from "@/routes/AppRouter";
+import { ContentProvider } from "@/context/ContentContext";
 
 function App() {
-  return <AppRouter />;
+  return (
+    <ContentProvider>
+      <AppRouter />
+    </ContentProvider>
+  );
 }
 
 export default App;

@@ -4,10 +4,11 @@ import PageBanner from "@/components/common/PageBanner";
 import Reveal from "@/components/common/Reveal";
 import SectionHeader from "@/components/common/SectionHeader";
 import EventCard from "@/components/events/EventCard";
-import { events } from "@/services/contentService";
+import { useContent } from "@/hooks/useContent";
 import { formatDate, formatMonth } from "@/utils/format";
 
 export default function EventsPage() {
+  const { events } = useContent();
   const groupedEvents = events.reduce<Record<string, typeof events>>((groups, event) => {
     const month = formatMonth(event.date);
     return { ...groups, [month]: [...(groups[month] ?? []), event] };
@@ -26,7 +27,7 @@ export default function EventsPage() {
           <SectionHeader
             eyebrow="Upcoming events"
             title="Public programs on the calendar."
-            description="Events are stored as JSON records with dates, locations, types, summaries, and featured flags."
+            description="Events are loaded from the public program API with dates, locations, types, and summaries."
           />
           <div className="grid gap-5 lg:grid-cols-2">
             {events.map((event, index) => (
@@ -43,7 +44,7 @@ export default function EventsPage() {
           <SectionHeader
             eyebrow="Calendar"
             title="Month-by-month layout."
-            description="This structure can later connect to a full event management module or calendar API."
+            description="The calendar stays synchronized with the event management module."
           />
           <div className="grid gap-6">
             {Object.entries(groupedEvents).map(([month, monthEvents]) => (

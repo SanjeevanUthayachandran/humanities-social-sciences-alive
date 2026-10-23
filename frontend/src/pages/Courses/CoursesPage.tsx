@@ -7,16 +7,17 @@ import PageBanner from "@/components/common/PageBanner";
 import Pagination from "@/components/common/Pagination";
 import Reveal from "@/components/common/Reveal";
 import SectionHeader from "@/components/common/SectionHeader";
-import { courses } from "@/services/contentService";
+import { useContent } from "@/hooks/useContent";
 import { uniqueValues } from "@/utils/format";
 
 const ITEMS_PER_PAGE = 6;
-const categories = ["All", ...uniqueValues(courses.map((course) => course.category))];
 
 export default function CoursesPage() {
+  const { courses } = useContent();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [page, setPage] = useState(1);
+  const categories = ["All", ...uniqueValues(courses.map((course) => course.category))];
 
   const normalizedQuery = query.trim().toLowerCase();
 
@@ -42,7 +43,7 @@ export default function CoursesPage() {
       <PageBanner
         eyebrow="Courses"
         title="Course pathways for humanities, social sciences, language, and professional growth."
-        description="Search the mock catalogue by topic, level, and learning area. Every course record is stored in JSON for future backend integration."
+        description="Search the live course catalogue by topic, level, and learning area."
       />
 
       <section className="py-16 sm:py-20">
@@ -98,7 +99,7 @@ export default function CoursesPage() {
           ) : (
             <EmptyState
               title="No courses found"
-              description="Try a different keyword or category. The catalogue is mock data and can be expanded later from the backend."
+              description="Try a different keyword or category."
             />
           )}
 

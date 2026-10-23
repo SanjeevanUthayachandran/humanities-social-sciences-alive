@@ -24,7 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, columnDefinition = "citext")
     private String email;
 
     @Column(name = "password_hash")

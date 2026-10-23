@@ -1,15 +1,42 @@
 import { ArrowLeft, BookOpen, CheckCircle2, Clock, MonitorPlay, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import CtaSection from "@/components/common/CtaSection";
 import Container from "@/components/common/Container";
 import PageBanner from "@/components/common/PageBanner";
 import SectionHeader from "@/components/common/SectionHeader";
 import { buttonVariants } from "@/components/ui/buttonVariants";
-import { getCourseBySlug } from "@/services/contentService";
+import PageLoader from "@/components/common/PageLoader";
+import { useContent } from "@/hooks/useContent";
+import { fetchCourseBySlug } from "@/services/contentApi";
+import type { Course } from "@/types/content";
 
 export default function CourseDetailsPage() {
   const { slug } = useParams();
-  const course = getCourseBySlug(slug);
+  const { courses } = useContent();
+  const fallbackCourse = courses.find((item) => item.slug === slug);
+  const [course, setCourse] = useState<Course | undefined>(fallbackCourse);
+  const [isLoading, setIsLoading] = useState(!fallbackCourse);
+
+  useEffect(() => {
+    if (!slug) return;
+    let active = true;
+    fetchCourseBySlug(slug)
+      .then((result) => {
+        if (active) setCourse(result);
+      })
+      .catch(() => {
+        if (active) setCourse(fallbackCourse);
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [slug, fallbackCourse]);
+
+  if (isLoading) return <PageLoader />;
 
   if (!course) {
     return (
@@ -21,7 +48,7 @@ export default function CourseDetailsPage() {
           </Link>
           <div className="mt-8 rounded-lg border border-dashed border-slate-300 bg-white p-8">
             <h1 className="text-2xl font-bold text-slate-950">Course not found</h1>
-            <p className="mt-3 text-slate-600">The selected course does not exist in the mock catalogue.</p>
+            <p className="mt-3 text-slate-600">The selected course is not available.</p>
           </div>
         </Container>
       </section>
@@ -46,16 +73,16 @@ export default function CourseDetailsPage() {
                 title="What learners will build."
                 description="This UI-only detail page is ready for enrollment, pricing, lesson, instructor, and payment data once the backend is connected."
               />
-              <div className="grid gap-4 sm:grid-cols-2">
+              {course.outcomes.length > 0 ? <div className="grid gap-4 sm:grid-cols-2">
                 {course.outcomes.map((outcome) => (
                   <article key={outcome} className="flex gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                     <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
                     <p className="text-sm leading-6 text-slate-700">{outcome}</p>
                   </article>
                 ))}
-              </div>
+              </div> : <p className="text-slate-600">Learning outcomes will be published with the course syllabus.</p>}
 
-              <div className="mt-12">
+              {course.modules.length > 0 ? <div className="mt-12">
                 <SectionHeader
                   eyebrow="Modules"
                   title="Syllabus preview."
@@ -69,7 +96,7 @@ export default function CourseDetailsPage() {
                     </article>
                   ))}
                 </div>
-              </div>
+              </div> : null}
             </div>
 
             <aside className="h-fit rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
@@ -87,10 +114,10 @@ export default function CourseDetailsPage() {
                   <MonitorPlay className="size-5 text-blue-600" />
                   <span>{course.mode}</span>
                 </div>
-                <div className="flex items-center gap-3">
+                {course.learners > 0 ? <div className="flex items-center gap-3">
                   <Users className="size-5 text-slate-500" />
                   <span>{course.learners}+ interested learners</span>
-                </div>
+                </div> : null}
               </dl>
               <div className="mt-6 rounded-lg bg-blue-50 p-4">
                 <p className="text-sm font-semibold text-blue-800">{course.priceLabel}</p>

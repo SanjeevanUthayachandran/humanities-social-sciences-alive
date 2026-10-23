@@ -36,7 +36,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> {}) // Uses CORS configuration from WebMvcConfigurer / CorsFilter
+                .cors(cors -> {
+                }) // Uses CORS configuration from WebMvcConfigurer / CorsFilter
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -56,28 +57,29 @@ public class SecurityConfig {
                                 "/api/v1/dashboard/public",
                                 "/api/v1/contact/faqs",
                                 "/api/v1/contact/offices",
-                                "/api/v1/newsletter/**"
-                        ).permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/contact/messages").permitAll()
+                                "/api/v1/newsletter/**")
+                        .permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/contact/messages")
+                        .permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/courses/search")
+                        .permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET,
                                 "/api/v1/courses",
-                                "/api/v1/courses/{id}",
+                                "/api/v1/courses/**",
                                 "/api/v1/events",
-                                "/api/v1/events/{id}",
+                                "/api/v1/events/**",
                                 "/api/v1/workshops",
-                                "/api/v1/workshops/{id}",
+                                "/api/v1/workshops/**",
                                 "/api/v1/literary/**",
-                                "/api/v1/readingclub/books",
-                                "/api/v1/readingclub/books/{id}",
+                                "/api/v1/books/**",
+                                "/api/v1/reading-clubs/**",
                                 "/api/v1/research/**",
-                                "/api/v1/publications/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                                "/api/v1/publications/**")
+                        .permitAll()
+                        .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler)
-                )
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -86,9 +88,8 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(passwordEncoder());
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 

@@ -45,7 +45,10 @@ CREATE TABLE IF NOT EXISTS publication.publication_authors
     -- Audit Fields
     --------------------------------------------------------
     created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at          TIMESTAMPTZ,
     created_by          UUID,
+    updated_by          UUID,
 
     --------------------------------------------------------
     -- Constraints
@@ -65,6 +68,11 @@ CREATE TABLE IF NOT EXISTS publication.publication_authors
 
     CONSTRAINT fk_publication_authors_created
         FOREIGN KEY(created_by)
+        REFERENCES auth.users(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_publication_authors_updated
+        FOREIGN KEY(updated_by)
         REFERENCES auth.users(id)
         ON DELETE SET NULL
 );

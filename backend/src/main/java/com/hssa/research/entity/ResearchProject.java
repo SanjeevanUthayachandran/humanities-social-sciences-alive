@@ -28,7 +28,7 @@ public class ResearchProject extends BaseEntity {
     @Column(nullable = false, unique = true, length = 255)
     private String slug;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "abstract", columnDefinition = "TEXT")
     private String abstractText;
 
     @Column(columnDefinition = "TEXT")

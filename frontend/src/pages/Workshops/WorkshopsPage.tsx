@@ -5,7 +5,7 @@ import Reveal from "@/components/common/Reveal";
 import SectionHeader from "@/components/common/SectionHeader";
 import WorkshopCard from "@/components/workshops/WorkshopCard";
 import { Button } from "@/components/ui/button";
-import { workshops } from "@/services/contentService";
+import { useContent } from "@/hooks/useContent";
 import type { Workshop } from "@/types/content";
 
 type WorkshopStatus = Workshop["status"] | "All";
@@ -13,6 +13,7 @@ type WorkshopStatus = Workshop["status"] | "All";
 const filters: WorkshopStatus[] = ["Upcoming", "Past", "All"];
 
 export default function WorkshopsPage() {
+  const { workshops } = useContent();
   const [status, setStatus] = useState<WorkshopStatus>("Upcoming");
   const visibleWorkshops = workshops.filter((workshop) => status === "All" || workshop.status === status);
 
@@ -21,7 +22,7 @@ export default function WorkshopsPage() {
       <PageBanner
         eyebrow="Workshops"
         title="Live workshops for practical academic and professional development."
-        description="Registration buttons are UI-only for now and ready for enrollment, email, and payment workflows in future phases."
+        description="Browse live workshop records and registration availability from the HSSA platform."
       />
 
       <section className="py-16 sm:py-20">
@@ -29,7 +30,7 @@ export default function WorkshopsPage() {
           <SectionHeader
             eyebrow="Program calendar"
             title="Upcoming and past workshops."
-            description="Switch between scheduled sessions and completed workshops to see how public programs can be managed from mock data."
+            description="Switch between scheduled sessions and completed workshops."
           />
           <div className="mb-8 inline-flex rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
             {filters.map((filter) => (

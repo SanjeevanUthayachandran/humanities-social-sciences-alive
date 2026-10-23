@@ -354,6 +354,8 @@ public class CourseServiceImpl implements CourseService {
                 .id(course.getId())
                 .title(course.getTitle())
                 .slug(course.getSlug())
+                .subtitle(course.getSubtitle())
+                .description(course.getDescription())
                 .categoryName(course.getCategory() != null ? course.getCategory().getName() : null)
                 .level(course.getLevel().name())
                 .status(course.getStatus().name())
@@ -362,6 +364,8 @@ public class CourseServiceImpl implements CourseService {
                 .price(course.getPrice())
                 .discountedPrice(course.getDiscountedPrice())
                 .currency(course.getCurrency())
+                .durationHours(course.getDurationHours())
+                .tags(course.getTags().stream().map(CourseTag::getTagName).collect(Collectors.toList()))
                 .build();
     }
 

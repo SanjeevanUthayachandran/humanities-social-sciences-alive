@@ -31,7 +31,7 @@ public class ContactOffice {
     @Column(length = 50)
     private String phone;
 
-    @Column(length = 255)
+    @Column(columnDefinition = "citext")
     private String email;
 
     @Column(name = "opening_hours", length = 255)

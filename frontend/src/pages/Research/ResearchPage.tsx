@@ -6,10 +6,11 @@ import PageBanner from "@/components/common/PageBanner";
 import Reveal from "@/components/common/Reveal";
 import SectionHeader from "@/components/common/SectionHeader";
 import ResearchCard from "@/components/research/ResearchCard";
-import { researchItems } from "@/services/contentService";
+import { useContent } from "@/hooks/useContent";
 import { uniqueValues } from "@/utils/format";
 
 export default function ResearchPage() {
+  const { researchItems } = useContent();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
 
@@ -57,7 +58,7 @@ export default function ResearchPage() {
           <SectionHeader
             eyebrow="Browse research"
             title="Search by theme or category."
-            description="The mock data is structured to become a backend-backed research repository with downloads, authors, and editorial controls."
+            description="Browse the backend-backed research repository by title, category, or theme."
           />
 
           <div className="mb-8 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_260px]">
@@ -96,7 +97,7 @@ export default function ResearchPage() {
           ) : (
             <EmptyState
               title="No research found"
-              description="Try another search term or category. New research records can be added through JSON or future APIs."
+              description="Try another search term or category."
             />
           )}
         </Container>

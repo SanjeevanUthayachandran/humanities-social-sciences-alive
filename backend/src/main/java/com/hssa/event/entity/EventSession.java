@@ -1,5 +1,6 @@
 package com.hssa.event.entity;
 
+import com.hssa.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,8 +38,9 @@ public class EventSession {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "meeting_link", columnDefinition = "TEXT")
-    private String meetingLink;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "speaker_id")
+    private User speaker;
 
     @Version
     private Integer version;
@@ -50,4 +52,15 @@ public class EventSession {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    private User updatedBy;
 }

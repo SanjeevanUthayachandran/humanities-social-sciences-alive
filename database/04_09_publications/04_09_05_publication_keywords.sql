@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS publication.publication_keywords
     deleted_at          TIMESTAMPTZ,
     created_by          UUID,
     updated_by          UUID,
+    version             INTEGER NOT NULL DEFAULT 0,
 
     --------------------------------------------------------
     -- Constraints
@@ -73,7 +74,11 @@ CREATE TABLE IF NOT EXISTS publication.publication_keyword_map
     -- Audit Fields
     --------------------------------------------------------
     created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at          TIMESTAMPTZ,
     created_by          UUID,
+    updated_by          UUID,
+    version             INTEGER NOT NULL DEFAULT 0,
 
     --------------------------------------------------------
     -- Constraints
@@ -93,6 +98,11 @@ CREATE TABLE IF NOT EXISTS publication.publication_keyword_map
 
     CONSTRAINT fk_pkm_created
         FOREIGN KEY(created_by)
+        REFERENCES auth.users(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_pkm_updated
+        FOREIGN KEY(updated_by)
         REFERENCES auth.users(id)
         ON DELETE SET NULL
 );

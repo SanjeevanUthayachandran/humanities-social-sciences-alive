@@ -26,7 +26,7 @@ public class ContactMessage {
     @Column(name = "full_name", nullable = false, length = 200)
     private String fullName;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, columnDefinition = "citext")
     private String email;
 
     @Column(name = "phone_number", length = 30)
@@ -73,7 +73,7 @@ public class ContactMessage {
     @Column(name = "replied_at")
     private LocalDateTime repliedAt;
 
-    @Column(name = "ip_address")
+    @Column(name = "ip_address", columnDefinition = "inet")
     private String ipAddress;
 
     @Column(name = "user_agent", columnDefinition = "TEXT")

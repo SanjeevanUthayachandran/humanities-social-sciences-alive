@@ -20,7 +20,7 @@ public class NewsletterSubscriber {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(nullable = false, unique = true, columnDefinition = "citext")
     private String email;
 
     @Column(name = "full_name", length = 200)

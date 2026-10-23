@@ -11,20 +11,15 @@ import NewsCard from "@/components/news/NewsCard";
 import ResearchCard from "@/components/research/ResearchCard";
 import WorkshopCard from "@/components/workshops/WorkshopCard";
 import { buttonVariants } from "@/components/ui/buttonVariants";
-import {
-  about,
-  getFeaturedCourses,
-  getFeaturedResearch,
-  getLatestNews,
-  getUpcomingEvents,
-  getUpcomingWorkshops,
-} from "@/services/contentService";
+import { useContent } from "@/hooks/useContent";
+import { about, getLatestNews } from "@/services/contentService";
 
 export default function HomePage() {
-  const featuredCourses = getFeaturedCourses().slice(0, 3);
-  const featuredResearch = getFeaturedResearch().slice(0, 2);
-  const upcomingWorkshops = getUpcomingWorkshops().slice(0, 3);
-  const upcomingEvents = getUpcomingEvents().slice(0, 2);
+  const { courses, researchItems, workshops, events } = useContent();
+  const featuredCourses = courses.filter((course) => course.featured).slice(0, 3);
+  const featuredResearch = researchItems.filter((item) => item.featured).slice(0, 2);
+  const upcomingWorkshops = workshops.filter((workshop) => workshop.status === "Upcoming").slice(0, 3);
+  const upcomingEvents = events.slice(0, 2);
   const latestNews = getLatestNews().slice(0, 3);
 
   return (

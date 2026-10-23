@@ -13,12 +13,15 @@ public class EventSummaryResponse {
     private UUID id;
     private String title;
     private String slug;
+    private String description;
     private String eventType;
     private String status;
     private String locationType;
+    private String locationDetails;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Boolean isFree;
     private BigDecimal price;
     private Integer maxParticipants;
+    private String organizerName;
 }

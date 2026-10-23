@@ -225,14 +225,17 @@ public class EventServiceImpl implements EventService {
                 .id(e.getId())
                 .title(e.getTitle())
                 .slug(e.getSlug())
+                .description(e.getDescription())
                 .eventType(e.getEventType().name())
                 .status(e.getStatus().name())
                 .locationType(e.getLocationType())
+                .locationDetails(e.getLocationDetails())
                 .startTime(e.getStartTime())
                 .endTime(e.getEndTime())
                 .isFree(e.getIsFree())
                 .price(e.getPrice())
                 .maxParticipants(e.getMaxParticipants())
+                .organizerName(e.getCreatedBy() != null ? e.getCreatedBy().getFirstName() + " " + e.getCreatedBy().getLastName() : null)
                 .build();
     }
 }

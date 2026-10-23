@@ -26,10 +26,10 @@ export default function ResearchCard({ item }: ResearchCardProps) {
         ))}
       </div>
       <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
-        <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
+        {item.downloads.length > 0 ? <div className="flex items-center gap-2 text-sm font-medium text-slate-600">
           <Download className="size-4 text-blue-600" />
-          {item.downloads.length} UI downloads
-        </div>
+          {item.downloads.length} downloads
+        </div> : <span className="text-sm text-slate-500">Research project</span>}
         <Link
           to={`/research/${item.slug}`}
           className={buttonVariants({ variant: "outline", size: "sm" })}

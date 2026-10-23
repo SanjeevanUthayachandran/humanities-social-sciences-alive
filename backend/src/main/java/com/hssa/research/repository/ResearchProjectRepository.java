@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface ResearchProjectRepository extends JpaRepository<ResearchProject, UUID>, JpaSpecificationExecutor<ResearchProject> {
     Optional<ResearchProject> findByIdAndDeletedAtIsNull(UUID id);
+    Optional<ResearchProject> findBySlugAndDeletedAtIsNull(String slug);
     boolean existsByTitleAndDeletedAtIsNull(String title);
     boolean existsBySlugAndDeletedAtIsNull(String slug);
 }

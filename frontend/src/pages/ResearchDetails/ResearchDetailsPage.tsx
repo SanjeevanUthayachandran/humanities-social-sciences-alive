@@ -1,15 +1,42 @@
 import { ArrowLeft, Download, FileText, Tag } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Container from "@/components/common/Container";
 import PageBanner from "@/components/common/PageBanner";
 import SectionHeader from "@/components/common/SectionHeader";
 import { buttonVariants } from "@/components/ui/buttonVariants";
-import { getResearchBySlug } from "@/services/contentService";
+import PageLoader from "@/components/common/PageLoader";
+import { useContent } from "@/hooks/useContent";
+import { fetchResearchBySlug } from "@/services/contentApi";
+import type { ResearchItem } from "@/types/content";
 import { formatDate } from "@/utils/format";
 
 export default function ResearchDetailsPage() {
   const { slug } = useParams();
-  const item = getResearchBySlug(slug);
+  const { researchItems } = useContent();
+  const fallbackItem = researchItems.find((research) => research.slug === slug);
+  const [item, setItem] = useState<ResearchItem | undefined>(fallbackItem);
+  const [isLoading, setIsLoading] = useState(!fallbackItem);
+
+  useEffect(() => {
+    if (!slug) return;
+    let active = true;
+    fetchResearchBySlug(slug)
+      .then((result) => {
+        if (active) setItem(result);
+      })
+      .catch(() => {
+        if (active) setItem(fallbackItem);
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [slug, fallbackItem]);
+
+  if (isLoading) return <PageLoader />;
 
   if (!item) {
     return (
@@ -21,7 +48,7 @@ export default function ResearchDetailsPage() {
           </Link>
           <div className="mt-8 rounded-lg border border-dashed border-slate-300 bg-white p-8">
             <h1 className="text-2xl font-bold text-slate-950">Research item not found</h1>
-            <p className="mt-3 text-slate-600">The selected research item is not available in the mock data.</p>
+            <p className="mt-3 text-slate-600">The selected research item is not available.</p>
           </div>
         </Container>
       </section>
@@ -73,7 +100,7 @@ export default function ResearchDetailsPage() {
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 These controls are UI-only placeholders for protected documents and citation files.
               </p>
-              <div className="mt-6 space-y-3">
+              {item.downloads.length > 0 ? <div className="mt-6 space-y-3">
                 {item.downloads.map((download) => (
                   <button
                     key={download}
@@ -84,7 +111,7 @@ export default function ResearchDetailsPage() {
                     <Download className="size-4" />
                   </button>
                 ))}
-              </div>
+              </div> : <p className="mt-6 text-sm text-slate-500">No public files are available for this project yet.</p>}
             </aside>
           </div>
         </Container>

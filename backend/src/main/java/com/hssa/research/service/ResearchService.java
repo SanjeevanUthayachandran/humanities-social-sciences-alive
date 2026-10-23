@@ -19,6 +19,7 @@ public interface ResearchService {
     void archiveResearch(UUID projectId);
     void restoreResearch(UUID projectId);
     ResearchDetailResponse getResearch(UUID projectId);
+    ResearchDetailResponse getResearchBySlug(String slug);
     Page<ResearchSummaryResponse> searchResearch(String title, String category, String status, String keyword, Pageable pageable);
     
     // Member Management

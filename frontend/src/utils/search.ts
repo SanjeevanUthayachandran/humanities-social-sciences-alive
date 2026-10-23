@@ -1,4 +1,4 @@
-import { courses, events, newsItems, researchItems, workshops } from "@/services/contentService";
+import type { Course, EventItem, NewsItem, ResearchItem, Workshop } from "@/types/content";
 
 export interface SiteSearchResult {
   id: string;
@@ -8,7 +8,15 @@ export interface SiteSearchResult {
   path: string;
 }
 
-export function buildSearchIndex(): SiteSearchResult[] {
+interface SearchableContent {
+  courses: Course[];
+  researchItems: ResearchItem[];
+  workshops: Workshop[];
+  events: EventItem[];
+  newsItems: NewsItem[];
+}
+
+export function buildSearchIndex({ courses, researchItems, workshops, events, newsItems }: SearchableContent): SiteSearchResult[] {
   return [
     ...courses.map((course) => ({
       id: course.id,

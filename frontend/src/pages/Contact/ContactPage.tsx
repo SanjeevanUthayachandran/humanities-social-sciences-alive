@@ -1,10 +1,13 @@
 import { Globe, Mail, MapPin, Phone, Send, Share2, Video } from "lucide-react";
+import { useState, type FormEvent } from "react";
 import FaqList from "@/components/contact/FaqList";
 import Container from "@/components/common/Container";
 import PageBanner from "@/components/common/PageBanner";
 import SectionHeader from "@/components/common/SectionHeader";
 import { Button } from "@/components/ui/button";
-import { faqs } from "@/services/contentService";
+import { useContent } from "@/hooks/useContent";
+import { sendContactMessage } from "@/services/contactService";
+import { getRequestErrorMessage } from "@/services/requestError";
 
 const contactMethods = [
   { label: "Email", value: "hello@hssa.edu", icon: Mail },
@@ -13,18 +16,45 @@ const contactMethods = [
 ];
 
 export default function ContactPage() {
+  const { faqs } = useContent();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setFeedback(null);
+    const form = new FormData(event.currentTarget);
+
+    try {
+      await sendContactMessage({
+        fullName: `${form.get("firstName") ?? ""} ${form.get("lastName") ?? ""}`.trim(),
+        email: String(form.get("email") ?? ""),
+        subject: `${form.get("inquiryType") ?? "General"} inquiry`,
+        inquiryType: String(form.get("inquiryType") ?? "General"),
+        message: String(form.get("message") ?? ""),
+      });
+      event.currentTarget.reset();
+      setFeedback({ type: "success", text: "Your message was sent successfully." });
+    } catch (error) {
+      setFeedback({ type: "error", text: getRequestErrorMessage(error, "Your message could not be sent.") });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <>
       <PageBanner
         eyebrow="Contact"
         title="Speak with the Humanities & Social Sciences Alive team."
-        description="Use the UI-only contact form for presentation now. It is ready for email, CRM, or backend message handling later."
+        description="Send an inquiry directly to the Humanities & Social Sciences Alive team."
       />
 
       <section className="py-16 sm:py-20">
         <Container>
           <div className="grid gap-8 lg:grid-cols-[1fr_0.85fr]">
-            <form className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <SectionHeader
                 eyebrow="Message"
                 title="Send an inquiry."
@@ -34,19 +64,19 @@ export default function ContactPage() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block">
                   <span className="text-sm font-semibold text-slate-700">First name</span>
-                  <input className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
+                  <input name="firstName" required className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
                 </label>
                 <label className="block">
                   <span className="text-sm font-semibold text-slate-700">Last name</span>
-                  <input className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
+                  <input name="lastName" required className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
                 </label>
                 <label className="block sm:col-span-2">
                   <span className="text-sm font-semibold text-slate-700">Email</span>
-                  <input type="email" className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
+                  <input name="email" required type="email" className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
                 </label>
                 <label className="block sm:col-span-2">
                   <span className="text-sm font-semibold text-slate-700">Topic</span>
-                  <select className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100">
+                  <select name="inquiryType" className="mt-2 h-11 w-full rounded-md border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100">
                     <option>Courses</option>
                     <option>Research</option>
                     <option>Workshops</option>
@@ -56,11 +86,16 @@ export default function ContactPage() {
                 </label>
                 <label className="block sm:col-span-2">
                   <span className="text-sm font-semibold text-slate-700">Message</span>
-                  <textarea className="mt-2 min-h-36 w-full rounded-md border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
+                  <textarea name="message" required className="mt-2 min-h-36 w-full rounded-md border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-3 focus:ring-blue-100" />
                 </label>
               </div>
-              <Button type="button" className="mt-6 bg-blue-600 hover:bg-blue-700">
-                Send Message
+              {feedback ? (
+                <p role="status" className={`mt-5 text-sm font-semibold ${feedback.type === "success" ? "text-emerald-700" : "text-red-700"}`}>
+                  {feedback.text}
+                </p>
+              ) : null}
+              <Button type="submit" disabled={isSubmitting} className="mt-6 bg-blue-600 hover:bg-blue-700">
+                {isSubmitting ? "Sending..." : "Send Message"}
                 <Send />
               </Button>
             </form>
