@@ -1,6 +1,6 @@
 package com.hssa.event.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.event.dto.request.EventAttendanceRequest;
 import com.hssa.event.dto.request.EventFeedbackRequest;
 import com.hssa.event.dto.response.EventRegistrationResponse;
@@ -25,11 +25,18 @@ public class EventRegistrationController {
     private final EventRegistrationService registrationService;
     private final EventFeedbackService feedbackService;
 
+    @GetMapping("/registrations/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<EventRegistrationResponse>> getMyRegistrations(
+            @AuthenticationPrincipal CustomUserDetails user) {
+        return ResponseEntity.ok(registrationService.getUserRegistrations(user.getId()));
+    }
+
     @PostMapping("/{id}/register")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<EventRegistrationResponse> register(
             @PathVariable UUID id,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(registrationService.register(id, user.getId()));
     }
 
@@ -37,7 +44,7 @@ public class EventRegistrationController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> cancelRegistration(
             @PathVariable UUID id,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         registrationService.cancelRegistration(id, user.getId());
         return ResponseEntity.noContent().build();
     }
@@ -56,7 +63,7 @@ public class EventRegistrationController {
     public ResponseEntity<Void> recordAttendance(
             @PathVariable UUID id,
             @Valid @RequestBody EventAttendanceRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         registrationService.recordAttendance(id, request, user.getId());
         return ResponseEntity.ok().build();
     }
@@ -72,7 +79,7 @@ public class EventRegistrationController {
     public ResponseEntity<Void> submitFeedback(
             @PathVariable UUID id,
             @Valid @RequestBody EventFeedbackRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         feedbackService.submitFeedback(id, request, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

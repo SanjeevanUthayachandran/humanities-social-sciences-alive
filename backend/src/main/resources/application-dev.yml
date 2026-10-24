@@ -1,6 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:hssa_db}
+    # PostgreSQL enums accept values bound as an unspecified type and resolve
+    # them against the enum column. This keeps JPA EnumType.STRING portable to H2.
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:hssa_db}?stringtype=unspecified
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -29,3 +31,10 @@ logging:
     com.hssa: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Email delivery is optional during local development. Keep the main health
+# endpoint focused on the application and PostgreSQL connection.
+management:
+  health:
+    mail:
+      enabled: false

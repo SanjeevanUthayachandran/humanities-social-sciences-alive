@@ -114,14 +114,24 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventRegistrationResponse> getUserRegistrations(UUID userId) {
+        return registrationRepository.findByUserIdOrderByRegisteredAtDesc(userId).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
     private EventRegistrationResponse toResponse(EventRegistration r) {
         return EventRegistrationResponse.builder()
                 .id(r.getId())
                 .eventId(r.getEvent().getId())
+                .eventTitle(r.getEvent().getTitle())
                 .userId(r.getUser().getId())
                 .userFullName(r.getUser().getFirstName() + " " + r.getUser().getLastName())
                 .status(r.getStatus())
                 .registeredAt(r.getRegisteredAt())
+                .startTime(r.getEvent().getStartTime())
                 .build();
     }
 }

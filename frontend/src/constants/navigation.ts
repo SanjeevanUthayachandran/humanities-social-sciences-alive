@@ -1,10 +1,10 @@
 export const NAVIGATION = [
-  { name: "Home", path: "/" },
   { name: "About", path: "/about" },
   { name: "Courses", path: "/courses" },
   { name: "Research", path: "/research" },
+  { name: "Reading Club", path: "/reading-club" },
   { name: "Workshops", path: "/workshops" },
   { name: "Events", path: "/events" },
-  { name: "News", path: "/news" },
+  { name: "Publications", path: "/publications" },
   { name: "Contact", path: "/contact" },
 ];

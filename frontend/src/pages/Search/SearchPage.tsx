@@ -1,22 +1,19 @@
-import { Clock3, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import EmptyState from "@/components/common/EmptyState";
 import Container from "@/components/common/Container";
 import PageBanner from "@/components/common/PageBanner";
 import SectionHeader from "@/components/common/SectionHeader";
-import { buttonVariants } from "@/components/ui/buttonVariants";
-import { popularTopics, recentSearches } from "@/services/contentService";
 import { buildSearchIndex, filterSearchResults } from "@/utils/search";
 import { useMemo, useState } from "react";
 import { useContent } from "@/hooks/useContent";
-import { newsItems } from "@/services/contentService";
 
 export default function SearchPage() {
-  const { courses, researchItems, workshops, events } = useContent();
+  const { courses, researchItems, workshops, events, publications, books, isLoading } = useContent();
   const [query, setQuery] = useState("");
   const searchIndex = useMemo(
-    () => buildSearchIndex({ courses, researchItems, workshops, events, newsItems }),
-    [courses, researchItems, workshops, events],
+    () => buildSearchIndex({ courses, researchItems, workshops, events, publications, books }),
+    [courses, researchItems, workshops, events, publications, books],
   );
   const results = filterSearchResults(searchIndex, query);
 
@@ -24,8 +21,8 @@ export default function SearchPage() {
     <>
       <PageBanner
         eyebrow="Search"
-        title="Search courses, research, workshops, events, and news."
-        description="Search the live course, research, workshop, and event catalogue in one place."
+        title="Search the whole HSSA learning ecosystem."
+        description="Find live courses, research, workshops, events, publications, and reading-club books in one place."
       />
 
       <section className="py-16 sm:py-20">
@@ -41,11 +38,10 @@ export default function SearchPage() {
             />
           </label>
 
-          <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-            <div>
+          <div className="mt-10">
               <SectionHeader
                 eyebrow="Results"
-                title={query ? `Results for "${query}"` : "Popular results"}
+                title={query ? `Results for "${query}"` : "Browse everything"}
                 description={`${results.length} matching items from the site index.`}
                 className="mb-6"
               />
@@ -55,7 +51,7 @@ export default function SearchPage() {
                     <Link
                       key={`${result.type}-${result.id}`}
                       to={result.path}
-                      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
+                      className="rounded-2xl border border-slate-200 bg-white p-6 card-lift"
                     >
                       <span className="text-xs font-bold uppercase tracking-[0.14em] text-blue-700">
                         {result.type}
@@ -68,36 +64,9 @@ export default function SearchPage() {
               ) : (
                 <EmptyState
                   title="No results found"
-                  description="Try another keyword. Future backend search can support ranking, filters, and saved searches."
+                  description={isLoading ? "The catalogue is still loading." : "Try another keyword or browse a section from the main navigation."}
                 />
               )}
-            </div>
-
-            <aside className="space-y-5">
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <Clock3 className="size-5 text-blue-600" />
-                  <h2 className="font-bold text-slate-950">Recent searches</h2>
-                </div>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {recentSearches.map((topic) => (
-                    <Link key={topic.label} to={topic.path} className={buttonVariants({ variant: "outline", size: "sm" })}>
-                      {topic.label}
-                    </Link>
-                  ))}
-                </div>
-              </article>
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <h2 className="font-bold text-slate-950">Popular topics</h2>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {popularTopics.map((topic) => (
-                    <Link key={topic.label} to={topic.path} className={buttonVariants({ variant: "outline", size: "sm" })}>
-                      {topic.label}
-                    </Link>
-                  ))}
-                </div>
-              </article>
-            </aside>
           </div>
         </Container>
       </section>

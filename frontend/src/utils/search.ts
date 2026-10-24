@@ -1,4 +1,4 @@
-import type { Course, EventItem, NewsItem, ResearchItem, Workshop } from "@/types/content";
+import type { BookItem, Course, EventItem, PublicationItem, ResearchItem, Workshop } from "@/types/content";
 
 export interface SiteSearchResult {
   id: string;
@@ -13,10 +13,11 @@ interface SearchableContent {
   researchItems: ResearchItem[];
   workshops: Workshop[];
   events: EventItem[];
-  newsItems: NewsItem[];
+  publications: PublicationItem[];
+  books: BookItem[];
 }
 
-export function buildSearchIndex({ courses, researchItems, workshops, events, newsItems }: SearchableContent): SiteSearchResult[] {
+export function buildSearchIndex({ courses, researchItems, workshops, events, publications, books }: SearchableContent): SiteSearchResult[] {
   return [
     ...courses.map((course) => ({
       id: course.id,
@@ -46,12 +47,19 @@ export function buildSearchIndex({ courses, researchItems, workshops, events, ne
       summary: event.summary,
       path: "/events",
     })),
-    ...newsItems.map((item) => ({
+    ...publications.map((item) => ({
       id: item.id,
       title: item.title,
-      type: "News",
+      type: "Publication",
       summary: item.summary,
-      path: "/news",
+      path: `/publications/${item.id}`,
+    })),
+    ...books.map((item) => ({
+      id: item.id,
+      title: item.title,
+      type: "Reading Club",
+      summary: `${item.author} · ${item.category}`,
+      path: "/reading-club",
     })),
   ];
 }

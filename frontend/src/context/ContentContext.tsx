@@ -1,43 +1,70 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { ContentContext } from "@/context/contentContextValue";
+import { ContentContext, type ContentState } from "@/context/contentContextValue";
 import {
   fetchCourses,
+  fetchBooks,
+  fetchContactOffices,
   fetchEvents,
   fetchFaqs,
+  fetchPublicMetrics,
+  fetchPublications,
   fetchResearch,
   fetchWorkshops,
 } from "@/services/contentApi";
-import {
-  courses as fallbackCourses,
-  events as fallbackEvents,
-  faqs as fallbackFaqs,
-  researchItems as fallbackResearch,
-  workshops as fallbackWorkshops,
-} from "@/services/contentService";
+import type { PublicMetrics } from "@/types/content";
+
+const EMPTY_METRICS: PublicMetrics = {
+  totalCourses: 0,
+  totalStudents: 0,
+  totalInstructors: 0,
+  totalEvents: 0,
+};
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [courses, setCourses] = useState(fallbackCourses);
-  const [researchItems, setResearchItems] = useState(fallbackResearch);
-  const [workshops, setWorkshops] = useState(fallbackWorkshops);
-  const [events, setEvents] = useState(fallbackEvents);
-  const [faqs, setFaqs] = useState(fallbackFaqs);
+  const [courses, setCourses] = useState<ContentState["courses"]>([]);
+  const [researchItems, setResearchItems] = useState<ContentState["researchItems"]>([]);
+  const [workshops, setWorkshops] = useState<ContentState["workshops"]>([]);
+  const [events, setEvents] = useState<ContentState["events"]>([]);
+  const [publications, setPublications] = useState<ContentState["publications"]>([]);
+  const [books, setBooks] = useState<ContentState["books"]>([]);
+  const [offices, setOffices] = useState<ContentState["offices"]>([]);
+  const [faqs, setFaqs] = useState<ContentState["faqs"]>([]);
+  const [metrics, setMetrics] = useState(EMPTY_METRICS);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
+  const [failedResources, setFailedResources] = useState<string[]>([]);
 
   useEffect(() => {
     let active = true;
 
-    Promise.allSettled([fetchCourses(), fetchResearch(), fetchWorkshops(), fetchEvents(), fetchFaqs()])
+    const resourceNames = ["courses", "research", "workshops", "events", "publications", "books", "offices", "FAQs", "statistics"];
+
+    Promise.allSettled([
+      fetchCourses(),
+      fetchResearch(),
+      fetchWorkshops(),
+      fetchEvents(),
+      fetchPublications(),
+      fetchBooks(),
+      fetchContactOffices(),
+      fetchFaqs(),
+      fetchPublicMetrics(),
+    ])
       .then((results) => {
         if (!active) return;
-        const [courseResult, researchResult, workshopResult, eventResult, faqResult] = results;
+        const [courseResult, researchResult, workshopResult, eventResult, publicationResult, bookResult, officeResult, faqResult, metricsResult] = results;
 
         if (courseResult.status === "fulfilled") setCourses(courseResult.value);
         if (researchResult.status === "fulfilled") setResearchItems(researchResult.value);
         if (workshopResult.status === "fulfilled") setWorkshops(workshopResult.value);
         if (eventResult.status === "fulfilled") setEvents(eventResult.value);
+        if (publicationResult.status === "fulfilled") setPublications(publicationResult.value);
+        if (bookResult.status === "fulfilled") setBooks(bookResult.value);
+        if (officeResult.status === "fulfilled") setOffices(officeResult.value);
         if (faqResult.status === "fulfilled") setFaqs(faqResult.value);
-        setIsUsingFallback(results.some((result) => result.status === "rejected"));
+        if (metricsResult.status === "fulfilled") setMetrics(metricsResult.value);
+        setFailedResources(
+          results.flatMap((result, index) => result.status === "rejected" ? [resourceNames[index]] : []),
+        );
       })
       .finally(() => {
         if (active) setIsLoading(false);
@@ -49,8 +76,20 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ courses, researchItems, workshops, events, faqs, isLoading, isUsingFallback }),
-    [courses, researchItems, workshops, events, faqs, isLoading, isUsingFallback],
+    () => ({
+      courses,
+      researchItems,
+      workshops,
+      events,
+      publications,
+      books,
+      offices,
+      faqs,
+      metrics,
+      isLoading,
+      failedResources,
+    }),
+    [courses, researchItems, workshops, events, publications, books, offices, faqs, metrics, isLoading, failedResources],
   );
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;

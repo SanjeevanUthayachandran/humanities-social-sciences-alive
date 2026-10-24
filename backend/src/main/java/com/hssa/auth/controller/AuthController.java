@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +29,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("User registered successfully. Please verify your email."));
+                .body(ApiResponse.success("User registered successfully. You can now sign in."));
     }
 
     @PostMapping("/login")
@@ -36,6 +37,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthenticationResponse>> login(@Valid @RequestBody LoginRequest request,
             HttpServletRequest httpRequest) {
         return ResponseEntity.ok(ApiResponse.success(authService.login(request, httpRequest), "Login successful"));
+    }
+
+    @PostMapping("/google")
+    @Operation(summary = "Register or sign in with a verified Google identity")
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> googleLogin(
+            @Valid @RequestBody GoogleLoginRequest request) {
+        return ResponseEntity.ok(ApiResponse.success(authService.googleLogin(request), "Google sign-in successful"));
     }
 
     @PostMapping("/refresh")
@@ -58,7 +66,7 @@ public class AuthController {
     @Operation(summary = "Request password reset")
     public ResponseEntity<ApiResponse<String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         authService.forgotPassword(request);
-        return ResponseEntity.ok(ApiResponse.success("Password reset email sent"));
+        return ResponseEntity.ok(ApiResponse.success("If an HSSA account exists for this email, a secure reset link has been sent."));
     }
 
     @PostMapping("/reset-password")
@@ -66,6 +74,15 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request);
         return ResponseEntity.ok(ApiResponse.success("Password reset successful"));
+    }
+
+    @PostMapping("/change-password")
+    @Operation(summary = "Change the authenticated user's password")
+    public ResponseEntity<ApiResponse<String>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal com.hssa.security.dto.CustomUserDetails user) {
+        authService.changePassword(request, user.getEmail());
+        return ResponseEntity.ok(ApiResponse.success("Password changed successfully"));
     }
 
     @PostMapping("/verify-email")

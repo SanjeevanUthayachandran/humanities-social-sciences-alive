@@ -1,6 +1,6 @@
 package com.hssa.literary.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.literary.dto.request.CreateLiteraryWorkRequest;
 import com.hssa.literary.dto.request.UpdateLiteraryWorkRequest;
 import com.hssa.literary.dto.response.LiteraryCategoryResponse;
@@ -31,7 +31,7 @@ public class LiteraryController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<LiteraryWorkDetailResponse> createWork(
             @Valid @RequestBody CreateLiteraryWorkRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(literaryService.createWork(request, user.getId()));
     }
 

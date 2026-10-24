@@ -1,6 +1,6 @@
 package com.hssa.readingclub.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.readingclub.dto.request.CreateBookReviewRequest;
 import com.hssa.readingclub.dto.response.BookReviewResponse;
 import com.hssa.readingclub.service.BookInteractionService;
@@ -26,7 +26,7 @@ public class BookInteractionController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BookReviewResponse> createReview(
             @Valid @RequestBody CreateBookReviewRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookInteractionService.createReview(request, user.getId()));
     }
 
@@ -46,7 +46,7 @@ public class BookInteractionController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> addBookmark(
             @PathVariable UUID bookId,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         bookInteractionService.addBookmark(bookId, user.getId());
         return ResponseEntity.ok().build();
     }
@@ -55,7 +55,7 @@ public class BookInteractionController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> removeBookmark(
             @PathVariable UUID bookId,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         bookInteractionService.removeBookmark(bookId, user.getId());
         return ResponseEntity.noContent().build();
     }
@@ -64,7 +64,7 @@ public class BookInteractionController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Boolean> isBookmarked(
             @PathVariable UUID bookId,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(bookInteractionService.isBookmarked(bookId, user.getId()));
     }
 }

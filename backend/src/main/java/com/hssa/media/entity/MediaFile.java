@@ -83,6 +83,7 @@ public class MediaFile {
     private Boolean isPublic;
 
     @Column(name = "download_count")
+    @Builder.Default
     private Integer downloadCount = 0;
 
     @CreationTimestamp

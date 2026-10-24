@@ -218,12 +218,16 @@ Get-Service postgresql*
 Start-Service postgresql-x64-17
 ```
 
-For an existing HSSA database, apply the repeatable backend compatibility migration:
+For an existing HSSA database, apply the repeatable backend compatibility migration and then install the competition content, administrator allow-list, course artwork references, and payment policies:
 
 ```powershell
-$env:PGPASSWORD = "your-postgres-password"
+$env:DB_PASSWORD = Read-Host "PostgreSQL password" -MaskInput
+$env:PGPASSWORD = $env:DB_PASSWORD
 & "C:\Program Files\PostgreSQL\17\bin\psql.exe" -h localhost -U postgres -d hssa_db -v ON_ERROR_STOP=1 -f database/12_backend_compatibility.sql
+.\database\apply_competition_seed.ps1
 ```
+
+Do not put the PostgreSQL password in `application-dev.yml`; the backend now requires `DB_PASSWORD` from the shell environment.
 
 For a new database, execute the SQL files in the order documented in `database/README.md`. Be aware that `database/01_database.sql` drops and recreates `hssa_db` and therefore deletes an existing development database.
 
@@ -235,9 +239,43 @@ Open a second PowerShell terminal. The backend reads the database password from 
 
 ```powershell
 cd backend
-$env:DB_PASSWORD = "your-postgres-password"
+$env:DB_PASSWORD = Read-Host "PostgreSQL password" -MaskInput
 mvn spring-boot:run
 ```
+
+To deliver password-reset emails in development, configure the sending mailbox in the same PowerShell window before starting the backend:
+
+```powershell
+$env:MAIL_USERNAME = "your-sender@gmail.com"
+$env:MAIL_FROM = $env:MAIL_USERNAME
+$env:MAIL_PASSWORD = Read-Host "Gmail app password" -MaskInput
+$env:FRONTEND_URL = "http://localhost:5173"
+mvn spring-boot:run
+```
+
+For Gmail, enable 2-Step Verification and use a generated 16-digit App Password for `MAIL_PASSWORD`, not the normal Google account password. Keep it only in an environment variable; never commit it to `.env.example`, YAML, or Git. The backend intentionally returns a neutral success message for unknown email addresses so attackers cannot discover registered accounts. A real account receives a one-time link that expires after 30 minutes and opens the HSSA new-password page.
+
+### Google sign-in
+
+Create an OAuth 2.0 Client ID of type **Web application** in Google Cloud Console and add this development JavaScript origin:
+
+```text
+http://localhost:5173
+```
+
+Copy the generated client ID (it ends in `.apps.googleusercontent.com`) into `frontend/.env`:
+
+```dotenv
+VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+```
+
+Set the same client ID in the PowerShell terminal that starts the backend:
+
+```powershell
+$env:GOOGLE_CLIENT_ID = "your-client-id.apps.googleusercontent.com"
+```
+
+This popup-based flow does not need a redirect URI. Restart both the frontend and backend after changing these values. Never place the Google client secret in the frontend; this implementation only needs the public Web Client ID.
 
 The API runs at `http://localhost:8080/api/v1` and Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
 

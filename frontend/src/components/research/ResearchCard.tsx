@@ -11,7 +11,7 @@ interface ResearchCardProps {
 
 export default function ResearchCard({ item }: ResearchCardProps) {
   return (
-    <article className="group flex h-full flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl">
+    <article className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 card-lift">
       <div className="flex items-center justify-between gap-3">
         <Badge className="bg-emerald-50 text-emerald-700">{item.category}</Badge>
         <span className="text-xs font-semibold text-slate-500">{formatDate(item.date)}</span>

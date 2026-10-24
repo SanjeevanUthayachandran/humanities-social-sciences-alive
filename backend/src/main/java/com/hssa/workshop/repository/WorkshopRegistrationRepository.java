@@ -11,5 +11,6 @@ public interface WorkshopRegistrationRepository extends JpaRepository<WorkshopRe
     boolean existsByWorkshopIdAndUserId(UUID workshopId, UUID userId);
     Optional<WorkshopRegistration> findByWorkshopIdAndUserId(UUID workshopId, UUID userId);
     List<WorkshopRegistration> findByWorkshopId(UUID workshopId);
+    List<WorkshopRegistration> findByUserIdOrderByRegisteredAtDesc(UUID userId);
     long countByWorkshopIdAndStatus(UUID workshopId, String status);
 }

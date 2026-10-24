@@ -22,6 +22,7 @@ public class CourseDetailResponse {
     private UUID thumbnailMediaId;
     private UUID bannerMediaId;
     private UUID promotionalVideoId;
+    private String cardImageUrl;
     private Boolean isFree;
     private BigDecimal price;
     private BigDecimal discountedPrice;

@@ -123,12 +123,15 @@ public class MediaServiceImpl implements MediaService {
                 .fileExtension(extension)
                 .mimeType(file.getContentType())
                 .fileSize(file.getSize())
-                .fileUrl("/api/v1/media/download/" + storedName) // Basic local URL mapping
+                // Replaced with the public UUID endpoint immediately after the first insert.
+                .fileUrl("/api/v1/media/download/pending")
                 .altText(request.getAltText())
                 .caption(request.getCaption())
                 .isPublic(request.getIsPublic())
                 .build();
                 
+        mediaFile = mediaFileRepository.save(mediaFile);
+        mediaFile.setFileUrl("/api/v1/media/download/" + mediaFile.getId());
         mediaFile = mediaFileRepository.save(mediaFile);
         
         log.info("Uploaded file {} by user {}", mediaFile.getId(), userId);

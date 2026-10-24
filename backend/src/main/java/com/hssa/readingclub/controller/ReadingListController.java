@@ -1,6 +1,6 @@
 package com.hssa.readingclub.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.readingclub.dto.request.CreateReadingListRequest;
 import com.hssa.readingclub.dto.response.ReadingListResponse;
 import com.hssa.readingclub.service.ReadingListService;
@@ -26,7 +26,7 @@ public class ReadingListController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ReadingListResponse> createReadingList(
             @Valid @RequestBody CreateReadingListRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(readingListService.createReadingList(request, user.getId()));
     }
 
@@ -37,7 +37,7 @@ public class ReadingListController {
 
     @GetMapping("/my")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<ReadingListResponse>> getMyReadingLists(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<ReadingListResponse>> getMyReadingLists(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(readingListService.getUserReadingLists(user.getId()));
     }
 

@@ -228,6 +228,7 @@ public class EventServiceImpl implements EventService {
                 .description(e.getDescription())
                 .eventType(e.getEventType().name())
                 .status(e.getStatus().name())
+                .coverMediaId(e.getCoverMediaId())
                 .locationType(e.getLocationType())
                 .locationDetails(e.getLocationDetails())
                 .startTime(e.getStartTime())

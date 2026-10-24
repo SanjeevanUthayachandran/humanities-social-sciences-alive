@@ -8,7 +8,7 @@ import com.hssa.publication.dto.response.PublicationAuthorResponse;
 import com.hssa.publication.dto.response.PublicationSummaryResponse;
 import com.hssa.publication.dto.response.PublicationStatisticsResponse;
 import com.hssa.publication.service.PublicationService;
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public class PublicationController {
     @PreAuthorize("hasRole('USER') or hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     public ResponseEntity<PublicationDetailResponse> createPublication(
             @Valid @RequestBody CreatePublicationRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(publicationService.createPublication(request, user.getId()));
     }
 

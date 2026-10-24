@@ -7,6 +7,7 @@ public class ExceptionConstants {
     public static final String VALIDATION_FAILED = "Request validation failed.";
     public static final String DATA_INTEGRITY_VIOLATION = "Database constraint violation.";
     public static final String UNAUTHORIZED = "Authentication is required to access this resource.";
+    public static final String INVALID_CREDENTIALS = "Invalid email or password.";
     public static final String FORBIDDEN = "You do not have permission to access this resource.";
     public static final String BAD_REQUEST = "Malformed or invalid request.";
     public static final String PAYLOAD_TOO_LARGE = "The uploaded file exceeds the maximum allowed size.";

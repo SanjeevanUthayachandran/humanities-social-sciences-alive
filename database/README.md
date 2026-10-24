@@ -238,7 +238,17 @@ Execute SQL files in the following order.
 11_views.sql
 
 12_backend_compatibility.sql
+13_competition_content_and_access.sql
 ```
+
+For an existing local database, apply the competition content and access update from PowerShell:
+
+```powershell
+$env:DB_PASSWORD = Read-Host "PostgreSQL password" -MaskInput
+.\database\apply_competition_seed.ps1
+```
+
+The password remains in the current shell process and is never written to the repository.
 
 ---
 

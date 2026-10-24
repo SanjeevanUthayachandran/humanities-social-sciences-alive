@@ -114,14 +114,24 @@ public class WorkshopRegistrationServiceImpl implements WorkshopRegistrationServ
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<WorkshopRegistrationResponse> getUserRegistrations(UUID userId) {
+        return registrationRepository.findByUserIdOrderByRegisteredAtDesc(userId).stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
     private WorkshopRegistrationResponse toResponse(WorkshopRegistration r) {
         return WorkshopRegistrationResponse.builder()
                 .id(r.getId())
                 .workshopId(r.getWorkshop().getId())
+                .workshopTitle(r.getWorkshop().getTitle())
                 .userId(r.getUser().getId())
                 .userFullName(r.getUser().getFirstName() + " " + r.getUser().getLastName())
                 .status(r.getStatus())
                 .registeredAt(r.getRegisteredAt())
+                .startTime(r.getWorkshop().getStartTime())
                 .build();
     }
 }

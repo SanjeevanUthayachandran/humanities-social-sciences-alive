@@ -1,4 +1,4 @@
-import { ArrowLeft, Download, FileText, Tag } from "lucide-react";
+import { ArrowLeft, CalendarDays, FileText, Tag, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Container from "@/components/common/Container";
@@ -78,7 +78,7 @@ export default function ResearchDetailsPage() {
                 <SectionHeader
                   eyebrow="Tags"
                   title="Research themes."
-                  description="Tags and categories are ready for future filtering and recommendation APIs."
+                  description="Themes published with this research record."
                   className="mb-5"
                 />
                 <div className="flex flex-wrap gap-2">
@@ -95,23 +95,13 @@ export default function ResearchDetailsPage() {
             <aside className="h-fit rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-center gap-3">
                 <FileText className="size-6 text-blue-600" />
-                <h2 className="text-xl font-bold text-slate-950">Downloads</h2>
+                <h2 className="text-xl font-bold text-slate-950">Project details</h2>
               </div>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                These controls are UI-only placeholders for protected documents and citation files.
-              </p>
-              {item.downloads.length > 0 ? <div className="mt-6 space-y-3">
-                {item.downloads.map((download) => (
-                  <button
-                    key={download}
-                    type="button"
-                    className="flex h-11 w-full items-center justify-between rounded-md border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                  >
-                    {download}
-                    <Download className="size-4" />
-                  </button>
-                ))}
-              </div> : <p className="mt-6 text-sm text-slate-500">No public files are available for this project yet.</p>}
+              <dl className="mt-6 space-y-4 text-sm text-slate-600">
+                <div className="flex gap-3"><UserRound className="mt-0.5 size-4 shrink-0 text-blue-600" /><div><dt className="font-semibold text-slate-950">Lead contributor</dt><dd className="mt-1">{item.author}</dd></div></div>
+                <div className="flex gap-3"><CalendarDays className="mt-0.5 size-4 shrink-0 text-emerald-600" /><div><dt className="font-semibold text-slate-950">Published</dt><dd className="mt-1">{formatDate(item.date)}</dd></div></div>
+                <div className="flex gap-3"><Tag className="mt-0.5 size-4 shrink-0 text-blue-600" /><div><dt className="font-semibold text-slate-950">Category</dt><dd className="mt-1">{item.category}</dd></div></div>
+              </dl>
             </aside>
           </div>
         </Container>

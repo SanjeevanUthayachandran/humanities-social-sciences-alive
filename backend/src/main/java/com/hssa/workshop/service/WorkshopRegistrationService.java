@@ -12,4 +12,5 @@ public interface WorkshopRegistrationService {
     void approveRegistration(UUID workshopId, UUID userId);
     void recordAttendance(UUID workshopId, AttendanceRequest request, UUID recordedBy);
     List<WorkshopRegistrationResponse> getRegistrations(UUID workshopId);
+    List<WorkshopRegistrationResponse> getUserRegistrations(UUID userId);
 }

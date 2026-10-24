@@ -2,6 +2,9 @@ package com.hssa.course.specification;
 
 import com.hssa.course.dto.request.SearchCourseRequest;
 import com.hssa.course.entity.Course;
+import com.hssa.course.enums.CourseLevel;
+import com.hssa.course.enums.CourseStatus;
+import com.hssa.course.enums.CourseVisibility;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,7 +35,8 @@ public class CourseSpecification {
             }
 
             if (request.getLevel() != null && !request.getLevel().trim().isEmpty()) {
-                predicates.add(cb.equal(root.get("level").as(String.class), request.getLevel().trim().toUpperCase()));
+                predicates.add(cb.equal(root.get("level"),
+                        CourseLevel.valueOf(request.getLevel().trim().toUpperCase())));
             }
 
             if (request.getLanguage() != null && !request.getLanguage().trim().isEmpty()) {
@@ -40,11 +44,13 @@ public class CourseSpecification {
             }
 
             if (request.getStatus() != null && !request.getStatus().trim().isEmpty()) {
-                predicates.add(cb.equal(root.get("status").as(String.class), request.getStatus().trim().toUpperCase()));
+                predicates.add(cb.equal(root.get("status"),
+                        CourseStatus.valueOf(request.getStatus().trim().toUpperCase())));
             }
 
             if (request.getVisibility() != null && !request.getVisibility().trim().isEmpty()) {
-                predicates.add(cb.equal(root.get("visibility").as(String.class), request.getVisibility().trim().toUpperCase()));
+                predicates.add(cb.equal(root.get("visibility"),
+                        CourseVisibility.valueOf(request.getVisibility().trim().toUpperCase())));
             }
 
             if (request.getInstructorId() != null) {

@@ -220,6 +220,7 @@ public class WorkshopServiceImpl implements WorkshopService {
                 .description(w.getDescription())
                 .eventType(w.getEventType().name())
                 .status(w.getStatus().name())
+                .coverMediaId(w.getCoverMediaId())
                 .locationType(w.getLocationType())
                 .locationDetails(w.getLocationDetails())
                 .startTime(w.getStartTime())

@@ -1,6 +1,6 @@
 package com.hssa.event.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.event.dto.request.CreateEventRequest;
 import com.hssa.event.dto.request.UpdateEventRequest;
 import com.hssa.event.dto.response.EventDetailResponse;
@@ -37,28 +37,28 @@ public class EventController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_ORGANIZER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<EventDetailResponse> createEvent(
             @Valid @RequestBody CreateEventRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(request, user.getId()));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_ORGANIZER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<EventDetailResponse> updateEvent(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateEventRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(eventService.updateEvent(id, request, user.getId()));
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_ORGANIZER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<EventDetailResponse> patchEvent(
             @PathVariable UUID id,
             @RequestBody UpdateEventRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(eventService.updateEvent(id, request, user.getId()));
     }
 
@@ -70,7 +70,7 @@ public class EventController {
     }
 
     @PatchMapping("/{id}/publish")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EVENT_ORGANIZER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<Void> publishEvent(@PathVariable UUID id) {
         eventService.publishEvent(id);
         return ResponseEntity.ok().build();

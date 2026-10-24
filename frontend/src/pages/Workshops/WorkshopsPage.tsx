@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Container from "@/components/common/Container";
+import EmptyState from "@/components/common/EmptyState";
 import PageBanner from "@/components/common/PageBanner";
 import Reveal from "@/components/common/Reveal";
 import SectionHeader from "@/components/common/SectionHeader";
@@ -13,7 +14,7 @@ type WorkshopStatus = Workshop["status"] | "All";
 const filters: WorkshopStatus[] = ["Upcoming", "Past", "All"];
 
 export default function WorkshopsPage() {
-  const { workshops } = useContent();
+  const { workshops, isLoading, failedResources } = useContent();
   const [status, setStatus] = useState<WorkshopStatus>("Upcoming");
   const visibleWorkshops = workshops.filter((workshop) => status === "All" || workshop.status === status);
 
@@ -22,7 +23,7 @@ export default function WorkshopsPage() {
       <PageBanner
         eyebrow="Workshops"
         title="Live workshops for practical academic and professional development."
-        description="Browse live workshop records and registration availability from the HSSA platform."
+        description="Browse upcoming and past workshops and register with your HSSA account."
       />
 
       <section className="py-16 sm:py-20">
@@ -45,13 +46,13 @@ export default function WorkshopsPage() {
               </Button>
             ))}
           </div>
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {visibleWorkshops.length ? <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {visibleWorkshops.map((workshop, index) => (
               <Reveal key={workshop.id} delay={index * 0.05}>
                 <WorkshopCard workshop={workshop} />
               </Reveal>
             ))}
-          </div>
+          </div> : <EmptyState title={isLoading ? "Loading workshops" : "No workshops found"} description={failedResources.includes("workshops") ? "Workshops could not be loaded. Please try again in a moment." : "Try another filter or check back for newly published workshops."} />}
         </Container>
       </section>
     </>

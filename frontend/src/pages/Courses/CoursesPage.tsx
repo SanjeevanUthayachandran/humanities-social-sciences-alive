@@ -13,7 +13,7 @@ import { uniqueValues } from "@/utils/format";
 const ITEMS_PER_PAGE = 6;
 
 export default function CoursesPage() {
-  const { courses } = useContent();
+  const { courses, isLoading, failedResources } = useContent();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [page, setPage] = useState(1);
@@ -98,8 +98,8 @@ export default function CoursesPage() {
             </div>
           ) : (
             <EmptyState
-              title="No courses found"
-              description="Try a different keyword or category."
+              title={isLoading ? "Loading courses" : "No courses found"}
+              description={failedResources.includes("courses") ? "Courses could not be loaded. Please try again in a moment." : "Try a different keyword or category."}
             />
           )}
 

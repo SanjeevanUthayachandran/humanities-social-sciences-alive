@@ -28,12 +28,20 @@ export interface Course {
   duration: string;
   mode: string;
   priceLabel: string;
+  imageUrl?: string;
   summary: string;
   outcomes: string[];
   modules: string[];
   featured: boolean;
   rating: number;
   learners: number;
+}
+
+export interface PublicMetrics {
+  totalCourses: number;
+  totalStudents: number;
+  totalInstructors: number;
+  totalEvents: number;
 }
 
 export interface ResearchItem {
@@ -62,6 +70,7 @@ export interface Workshop {
   seats: number;
   priceLabel: string;
   summary: string;
+  imageUrl?: string;
 }
 
 export interface EventItem {
@@ -73,6 +82,42 @@ export interface EventItem {
   location: string;
   summary: string;
   featured: boolean;
+  imageUrl?: string;
+}
+
+export interface PublicationItem {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  content?: string;
+  category: string;
+  type: string;
+  status: string;
+  date: string;
+  doi?: string;
+  keywords: string[];
+  authors: string[];
+}
+
+export interface BookItem {
+  id: string;
+  title: string;
+  author: string;
+  category: string;
+  isbn?: string;
+  featured: boolean;
+}
+
+export interface ContactOffice {
+  id: string;
+  officeName: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  openingHours?: string;
+  googleMapUrl?: string;
+  isHeadOffice: boolean;
 }
 
 export interface NewsItem {

@@ -3,6 +3,7 @@ package com.hssa.exception.advice;
 import com.hssa.common.response.ApiResponse;
 import com.hssa.exception.BusinessException;
 import com.hssa.exception.ConflictException;
+import com.hssa.exception.EmailDeliveryException;
 import com.hssa.exception.ForbiddenException;
 import com.hssa.exception.ResourceNotFoundException;
 import com.hssa.exception.UnauthorizedException;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -171,6 +173,19 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED, request);
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleBadCredentialsException(BadCredentialsException ex, HttpServletRequest request) {
+        logError(ex, request);
+        ErrorResponse errorResponse = buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                ErrorCode.SECURITY_001.name(),
+                ExceptionConstants.INVALID_CREDENTIALS,
+                request,
+                null);
+
+        return buildResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED, request);
+    }
+
     @ExceptionHandler({DataIntegrityViolationException.class, ConflictException.class})
     public ResponseEntity<ApiResponse<ErrorResponse>> handleDataIntegrityViolationException(Exception ex, HttpServletRequest request) {
         logError(ex, request);
@@ -196,6 +211,19 @@ public class GlobalExceptionHandler {
                 null);
                 
         return buildResponseEntity(errorResponse, HttpStatus.PAYLOAD_TOO_LARGE, request);
+    }
+
+    @ExceptionHandler(EmailDeliveryException.class)
+    public ResponseEntity<ApiResponse<ErrorResponse>> handleEmailDeliveryException(EmailDeliveryException ex, HttpServletRequest request) {
+        logError(ex, request);
+        ErrorResponse errorResponse = buildErrorResponse(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                ErrorCode.COMMON_001.name(),
+                ex.getMessage(),
+                request,
+                null);
+
+        return buildResponseEntity(errorResponse, HttpStatus.SERVICE_UNAVAILABLE, request);
     }
 
     @ExceptionHandler({Exception.class, RuntimeException.class, BusinessException.class})

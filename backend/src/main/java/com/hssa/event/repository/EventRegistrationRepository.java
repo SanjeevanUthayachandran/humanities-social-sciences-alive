@@ -11,5 +11,6 @@ public interface EventRegistrationRepository extends JpaRepository<EventRegistra
     boolean existsByEventIdAndUserId(UUID eventId, UUID userId);
     Optional<EventRegistration> findByEventIdAndUserId(UUID eventId, UUID userId);
     List<EventRegistration> findByEventId(UUID eventId);
+    List<EventRegistration> findByUserIdOrderByRegisteredAtDesc(UUID userId);
     long countByEventIdAndStatus(UUID eventId, String status);
 }

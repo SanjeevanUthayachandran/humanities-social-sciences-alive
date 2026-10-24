@@ -34,4 +34,11 @@
         <logger name="com.hssa" level="INFO" />
     </springProfile>
 
+    <!-- Test and any custom profiles still need visible diagnostics. -->
+    <springProfile name="!dev &amp; !prod">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
 </configuration>

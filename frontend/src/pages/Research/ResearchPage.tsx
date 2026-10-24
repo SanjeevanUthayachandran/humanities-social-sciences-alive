@@ -1,4 +1,4 @@
-import { Download, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import EmptyState from "@/components/common/EmptyState";
 import Container from "@/components/common/Container";
@@ -10,12 +10,11 @@ import { useContent } from "@/hooks/useContent";
 import { uniqueValues } from "@/utils/format";
 
 export default function ResearchPage() {
-  const { researchItems } = useContent();
+  const { researchItems, isLoading, failedResources } = useContent();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
 
   const categories = ["All", ...uniqueValues(researchItems.map((item) => item.category))];
-  const featuredResearch = researchItems.filter((item) => item.featured);
   const normalizedQuery = query.trim().toLowerCase();
 
   const filteredResearch = researchItems.filter((item) => {
@@ -32,33 +31,16 @@ export default function ResearchPage() {
     <>
       <PageBanner
         eyebrow="Research"
-        title="Research, publications, and downloadable academic resources."
-        description="A public research hub prepared for future editorial workflows, publication repositories, citations, and file downloads."
+        title="Research that begins with real questions."
+        description="Explore HSSA research projects, from early inquiry to public findings."
       />
 
       <section className="py-16 sm:py-20">
         <Container>
           <SectionHeader
-            eyebrow="Featured research"
-            title="Current research directions."
-            description="These featured briefs show how the platform can support collaborative research and public academic resources."
-          />
-          <div className="grid gap-5 lg:grid-cols-2">
-            {featuredResearch.map((item, index) => (
-              <Reveal key={item.id} delay={index * 0.06}>
-                <ResearchCard item={item} />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="bg-slate-50 py-16 sm:py-20">
-        <Container>
-          <SectionHeader
             eyebrow="Browse research"
             title="Search by theme or category."
-            description="Browse the backend-backed research repository by title, category, or theme."
+            description="Find research by title, category, or theme."
           />
 
           <div className="mb-8 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_260px]">
@@ -96,36 +78,13 @@ export default function ResearchPage() {
             </div>
           ) : (
             <EmptyState
-              title="No research found"
-              description="Try another search term or category."
+              title={isLoading ? "Loading research" : "No research found"}
+              description={failedResources.includes("research") ? "Research could not be loaded. Please try again in a moment." : "Try another search term or category."}
             />
           )}
         </Container>
       </section>
 
-      <section className="py-16 sm:py-20">
-        <Container>
-          <SectionHeader
-            eyebrow="Downloads"
-            title="Download centre preview."
-            description="Download buttons are UI-only in this frontend release. They are ready for secure files, publication PDFs, and citation exports later."
-          />
-          <div className="grid gap-4 md:grid-cols-3">
-            {["Research proposal template", "Citation guide", "Reading list format"].map((download) => (
-              <article key={download} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <Download className="size-6 text-blue-600" />
-                <h3 className="mt-4 font-bold text-slate-950">{download}</h3>
-                <button
-                  type="button"
-                  className="mt-5 h-10 rounded-md border border-slate-200 px-4 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                >
-                  Download UI
-                </button>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
     </>
   );
 }

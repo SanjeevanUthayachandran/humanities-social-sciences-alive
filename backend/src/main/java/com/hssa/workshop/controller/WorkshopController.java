@@ -1,6 +1,6 @@
 package com.hssa.workshop.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.workshop.dto.request.CreateWorkshopRequest;
 import com.hssa.workshop.dto.request.UpdateWorkshopRequest;
 import com.hssa.workshop.dto.response.WorkshopDetailResponse;
@@ -40,7 +40,7 @@ public class WorkshopController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('INSTRUCTOR')")
     public ResponseEntity<WorkshopDetailResponse> createWorkshop(
             @Valid @RequestBody CreateWorkshopRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(workshopService.createWorkshop(request, user.getId()));
     }
 
@@ -49,7 +49,7 @@ public class WorkshopController {
     public ResponseEntity<WorkshopDetailResponse> updateWorkshop(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateWorkshopRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(workshopService.updateWorkshop(id, request, user.getId()));
     }
 
@@ -58,7 +58,7 @@ public class WorkshopController {
     public ResponseEntity<WorkshopDetailResponse> patchWorkshop(
             @PathVariable UUID id,
             @RequestBody UpdateWorkshopRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(workshopService.updateWorkshop(id, request, user.getId()));
     }
 

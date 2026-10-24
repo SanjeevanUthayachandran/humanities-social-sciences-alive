@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
+import java.util.List;
 
 public interface CourseService {
 
@@ -32,4 +33,6 @@ public interface CourseService {
     CourseDetailResponse getCourseById(UUID id, UUID userId, boolean isAdmin);
 
     Page<CourseSummaryResponse> searchCourses(SearchCourseRequest request, Pageable pageable, UUID userId, boolean isAdmin);
+
+    List<CourseSummaryResponse> getInstructorCourses(UUID instructorId);
 }

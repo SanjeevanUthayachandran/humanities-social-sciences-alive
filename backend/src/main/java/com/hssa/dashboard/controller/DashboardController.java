@@ -1,6 +1,6 @@
 package com.hssa.dashboard.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.dashboard.dto.response.AdminDashboardResponse;
 import com.hssa.dashboard.dto.response.InstructorDashboardResponse;
 import com.hssa.dashboard.dto.response.PublicDashboardResponse;
@@ -29,13 +29,13 @@ public class DashboardController {
 
     @GetMapping("/instructor")
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<InstructorDashboardResponse> getInstructorDashboard(@AuthenticationPrincipal User user) {
+    public ResponseEntity<InstructorDashboardResponse> getInstructorDashboard(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(dashboardService.getInstructorDashboard(user.getId()));
     }
 
     @GetMapping("/student")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<StudentDashboardResponse> getStudentDashboard(@AuthenticationPrincipal User user) {
+    public ResponseEntity<StudentDashboardResponse> getStudentDashboard(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(dashboardService.getStudentDashboard(user.getId()));
     }
 

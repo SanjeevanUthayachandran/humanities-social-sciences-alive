@@ -1,6 +1,6 @@
 package com.hssa.notification.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.notification.dto.request.BroadcastNotificationRequest;
 import com.hssa.notification.dto.request.CreateNotificationRequest;
 import com.hssa.notification.dto.request.NotificationPreferenceRequest;
@@ -33,14 +33,14 @@ public class NotificationController {
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<NotificationSummaryResponse>> listNotifications(
-            @AuthenticationPrincipal User user, Pageable pageable) {
+            @AuthenticationPrincipal CustomUserDetails user, Pageable pageable) {
         return ResponseEntity.ok(notificationService.listNotifications(user.getId(), pageable));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<NotificationDetailResponse> getNotification(
-            @PathVariable UUID id, @AuthenticationPrincipal User user) {
+            @PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(notificationService.getNotification(id, user.getId()));
     }
 
@@ -48,7 +48,7 @@ public class NotificationController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> sendNotification(
             @Valid @RequestBody CreateNotificationRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         notificationService.sendNotification(request, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -57,7 +57,7 @@ public class NotificationController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> broadcastNotification(
             @Valid @RequestBody BroadcastNotificationRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         notificationService.broadcastNotification(request, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -65,14 +65,14 @@ public class NotificationController {
     @PatchMapping("/{id}/read")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> markAsRead(
-            @PathVariable UUID id, @AuthenticationPrincipal User user) {
+            @PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         notificationService.markAsRead(id, user.getId());
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/read-all")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> markAllAsRead(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> markAllAsRead(@AuthenticationPrincipal CustomUserDetails user) {
         notificationService.markAllAsRead(user.getId());
         return ResponseEntity.ok().build();
     }
@@ -80,7 +80,7 @@ public class NotificationController {
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteNotification(
-            @PathVariable UUID id, @AuthenticationPrincipal User user) {
+            @PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         notificationService.deleteNotification(id, user.getId());
         return ResponseEntity.noContent().build();
     }
@@ -88,7 +88,7 @@ public class NotificationController {
     @GetMapping("/history")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<NotificationSummaryResponse>> getHistory(
-            @AuthenticationPrincipal User user, Pageable pageable) {
+            @AuthenticationPrincipal CustomUserDetails user, Pageable pageable) {
         // Simple alias for list for this requirement
         return ResponseEntity.ok(notificationService.listNotifications(user.getId(), pageable));
     }
@@ -96,7 +96,7 @@ public class NotificationController {
     @GetMapping("/search")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<NotificationSummaryResponse>> searchNotifications(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal CustomUserDetails user,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String keyword,
@@ -107,21 +107,21 @@ public class NotificationController {
     @GetMapping("/statistics")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<NotificationStatisticsResponse> getStatistics(
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(notificationService.getStatistics(user.getId()));
     }
 
     @GetMapping("/preferences")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<NotificationPreferenceResponse> getPreferences(
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(preferenceService.getPreferences(user.getId()));
     }
 
     @PutMapping("/preferences")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<NotificationPreferenceResponse> updatePreferences(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody NotificationPreferenceRequest request) {
         return ResponseEntity.ok(preferenceService.updatePreferences(user.getId(), request));
     }

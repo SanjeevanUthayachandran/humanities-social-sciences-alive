@@ -12,4 +12,5 @@ public interface EventRegistrationService {
     void approveRegistration(UUID eventId, UUID userId);
     void recordAttendance(UUID eventId, EventAttendanceRequest request, UUID recordedBy);
     List<EventRegistrationResponse> getRegistrations(UUID eventId);
+    List<EventRegistrationResponse> getUserRegistrations(UUID userId);
 }

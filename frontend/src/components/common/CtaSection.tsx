@@ -21,22 +21,22 @@ export default function CtaSection({
   secondaryPath = "/contact",
 }: CtaSectionProps) {
   return (
-    <section className="bg-slate-950 py-16 text-white sm:py-20">
+    <section className="bg-slate-950 py-14 text-white sm:py-16">
       <Container>
         <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
               Humanities & Social Sciences Alive
             </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-normal sm:text-4xl">{title}</h2>
-            <p className="mt-4 text-lg leading-8 text-slate-300">{description}</p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">{title}</h2>
+            <p className="mt-4 text-base leading-7 text-slate-300 sm:text-lg">{description}</p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-            <Link to={primaryPath} className={buttonVariants({ size: "lg", className: "bg-blue-600 hover:bg-blue-700" })}>
+            <Link to={primaryPath} className={buttonVariants({ size: "lg", className: "bg-blue-600 text-white hover:bg-blue-500" })}>
               {primaryLabel}
               <ArrowRight />
             </Link>
-            <Link to={secondaryPath} className={buttonVariants({ variant: "outline", size: "lg", className: "border-white/25 bg-white/10 text-white hover:bg-white/15 hover:text-white" })}>
+            <Link to={secondaryPath} className={buttonVariants({ variant: "outline", size: "lg", className: "border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" })}>
               <Mail />
               {secondaryLabel}
             </Link>

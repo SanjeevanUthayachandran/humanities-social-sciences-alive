@@ -1,6 +1,16 @@
 import apiClient from "@/services/apiClient";
 import type { ApiResponse, PageResponse } from "@/types/api";
-import type { Course, EventItem, FaqItem, ResearchItem, Workshop } from "@/types/content";
+import type {
+  BookItem,
+  ContactOffice,
+  Course,
+  EventItem,
+  FaqItem,
+  PublicationItem,
+  PublicMetrics,
+  ResearchItem,
+  Workshop,
+} from "@/types/content";
 
 interface CourseSummaryDto {
   id: string;
@@ -16,10 +26,17 @@ interface CourseSummaryDto {
   currency?: string;
   durationHours?: number;
   tags?: string[];
+  cardImageUrl?: string;
 }
 
 interface CourseDetailDto extends CourseSummaryDto {
   language?: string;
+}
+
+interface ModuleDto {
+  id: string;
+  title: string;
+  displayOrder: number;
 }
 
 interface ResearchSummaryDto {
@@ -52,11 +69,39 @@ interface ProgramSummaryDto {
   price?: number;
   maxParticipants?: number;
   organizerName?: string;
+  coverMediaId?: string;
 }
 
 interface FaqDto extends FaqItem {
   id: string;
   displayOrder: number;
+}
+
+interface PublicationSummaryDto {
+  id: string;
+  title: string;
+  slug: string;
+  abstractText?: string;
+  categoryName?: string;
+  status?: string;
+  publicationType?: string;
+  publishedDate?: string;
+}
+
+interface PublicationDetailDto extends PublicationSummaryDto {
+  content?: string;
+  doi?: string;
+  keywords?: string[];
+  authors?: Array<{ firstName: string; lastName: string; isPrimary: boolean }>;
+}
+
+interface BookSummaryDto {
+  id: string;
+  title: string;
+  author: string;
+  isbn?: string;
+  categoryName?: string;
+  isFeatured?: boolean;
 }
 
 function readableEnum(value: string | undefined, fallback: string) {
@@ -71,7 +116,7 @@ function priceLabel(isFree?: boolean, price?: number, currency = "LKR") {
 }
 
 function datePart(value: string | undefined) {
-  return value?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
+  return value?.slice(0, 10) ?? "";
 }
 
 function timePart(value: string | undefined) {
@@ -79,7 +124,7 @@ function timePart(value: string | undefined) {
   return new Intl.DateTimeFormat("en", { hour: "numeric", minute: "2-digit" }).format(new Date(value));
 }
 
-function mapCourse(dto: CourseSummaryDto | CourseDetailDto): Course {
+function mapCourse(dto: CourseSummaryDto | CourseDetailDto, modules: ModuleDto[] = []): Course {
   const effectivePrice = dto.discountedPrice ?? dto.price;
   return {
     id: dto.id,
@@ -90,12 +135,31 @@ function mapCourse(dto: CourseSummaryDto | CourseDetailDto): Course {
     duration: dto.durationHours ? `${dto.durationHours} hours` : "Self-paced",
     mode: "Online",
     priceLabel: priceLabel(dto.isFree, effectivePrice, dto.currency),
+    imageUrl: dto.cardImageUrl,
     summary: dto.description ?? dto.subtitle ?? "Course details are available from the HSSA catalogue.",
     outcomes: dto.tags ?? [],
-    modules: [],
-    featured: true,
+    modules: [...modules].sort((left, right) => left.displayOrder - right.displayOrder).map((module) => module.title),
+    featured: false,
     rating: 0,
     learners: 0,
+  };
+}
+
+function mapPublication(dto: PublicationSummaryDto | PublicationDetailDto): PublicationItem {
+  const detail = dto as PublicationDetailDto;
+  return {
+    id: dto.id,
+    slug: dto.slug,
+    title: dto.title,
+    summary: dto.abstractText ?? "Publication details are available from the HSSA repository.",
+    content: detail.content,
+    category: dto.categoryName ?? "Publication",
+    type: readableEnum(dto.publicationType, "Publication"),
+    status: readableEnum(dto.status, "Published"),
+    date: datePart(dto.publishedDate),
+    doi: detail.doi,
+    keywords: detail.keywords ?? [],
+    authors: detail.authors?.map((author) => `${author.firstName} ${author.lastName}`) ?? [],
   };
 }
 
@@ -113,7 +177,7 @@ function mapResearch(dto: ResearchSummaryDto | ResearchDetailDto): ResearchItem 
     abstract: dto.abstractText ?? detail.content ?? "No abstract has been published yet.",
     tags: detail.keywords ?? [readableEnum(dto.researchType, "Research")],
     downloads: [],
-    featured: true,
+    featured: false,
   };
 }
 
@@ -131,6 +195,7 @@ function mapWorkshop(dto: ProgramSummaryDto): Workshop {
     seats: dto.maxParticipants ?? 0,
     priceLabel: priceLabel(dto.isFree, dto.price),
     summary: dto.description ?? "View this workshop in the HSSA program calendar.",
+    imageUrl: dto.coverMediaId ? `${String(apiClient.defaults.baseURL ?? "").replace(/\/$/, "")}/media/download/${dto.coverMediaId}` : undefined,
   };
 }
 
@@ -143,7 +208,8 @@ function mapEvent(dto: ProgramSummaryDto): EventItem {
     time: timePart(dto.startTime),
     location: dto.locationDetails ?? readableEnum(dto.locationType, "Online"),
     summary: dto.description ?? "View this public program in the HSSA event calendar.",
-    featured: true,
+    featured: false,
+    imageUrl: dto.coverMediaId ? `${String(apiClient.defaults.baseURL ?? "").replace(/\/$/, "")}/media/download/${dto.coverMediaId}` : undefined,
   };
 }
 
@@ -152,19 +218,73 @@ export async function fetchCourses() {
     "/courses/search?size=100&sort=publishedAt,desc",
     {},
   );
-  return response.data.data.content.map(mapCourse);
+  return response.data.data.content.map((course) => mapCourse(course));
 }
 
 export async function fetchCourseBySlug(slug: string) {
   const response = await apiClient.get<ApiResponse<CourseDetailDto>>(`/courses/slug/${encodeURIComponent(slug)}`);
-  return mapCourse(response.data.data);
+  const course = response.data.data;
+  try {
+    const moduleResponse = await apiClient.get<ApiResponse<ModuleDto[]>>(`/courses/${course.id}/modules`);
+    return mapCourse(course, moduleResponse.data.data);
+  } catch {
+    return mapCourse(course);
+  }
 }
 
 export async function fetchResearch() {
   const response = await apiClient.get<PageResponse<ResearchSummaryDto>>("/research/search", {
-    params: { size: 100, sort: "publishedDate,desc" },
+    params: { status: "PUBLISHED", size: 100, sort: "publishedDate,desc" },
   });
   return response.data.content.map(mapResearch);
+}
+
+export async function fetchPublicMetrics() {
+  const response = await apiClient.get<PublicMetrics>("/dashboard/public");
+  return response.data;
+}
+
+export async function fetchPublications() {
+  const response = await apiClient.get<PageResponse<PublicationSummaryDto>>("/publications/search", {
+    params: { status: "PUBLISHED", size: 100, sort: "publishedDate,desc" },
+  });
+  return response.data.content.map(mapPublication);
+}
+
+export async function fetchPublicationById(id: string) {
+  const response = await apiClient.get<PublicationDetailDto>(`/publications/${encodeURIComponent(id)}`);
+  return mapPublication(response.data);
+}
+
+export async function fetchBooks() {
+  const response = await apiClient.get<PageResponse<BookSummaryDto>>("/books", {
+    params: { size: 100, sort: "title,asc" },
+  });
+  return response.data.content.map<BookItem>((book) => ({
+    id: book.id,
+    title: book.title,
+    author: book.author,
+    category: book.categoryName ?? "Reading Club",
+    isbn: book.isbn,
+    featured: Boolean(book.isFeatured),
+  }));
+}
+
+export async function fetchContactOffices() {
+  const response = await apiClient.get<ContactOffice[]>("/contact/offices");
+  return response.data;
+}
+
+export async function enrollInCourse(courseId: string) {
+  await apiClient.post("/enrollments", { courseId });
+}
+
+export async function registerForWorkshop(workshopId: string) {
+  await apiClient.post(`/workshops/${encodeURIComponent(workshopId)}/register`);
+}
+
+export async function registerForEvent(eventId: string) {
+  await apiClient.post(`/events/${encodeURIComponent(eventId)}/register`);
 }
 
 export async function fetchResearchBySlug(slug: string) {

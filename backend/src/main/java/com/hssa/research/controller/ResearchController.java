@@ -7,7 +7,7 @@ import com.hssa.research.dto.response.ResearchDetailResponse;
 import com.hssa.research.dto.response.ResearchMemberResponse;
 import com.hssa.research.dto.response.ResearchSummaryResponse;
 import com.hssa.research.service.ResearchService;
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,7 @@ public class ResearchController {
     @PreAuthorize("hasRole('USER') or hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     public ResponseEntity<ResearchDetailResponse> createResearch(
             @Valid @RequestBody CreateResearchRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(researchService.createResearch(request, user.getId()));
     }
 

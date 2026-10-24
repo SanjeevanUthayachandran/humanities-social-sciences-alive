@@ -10,10 +10,12 @@ const monthFormatter = new Intl.DateTimeFormat("en", {
 });
 
 export function formatDate(value: string) {
+  if (!value) return "Date pending";
   return dateFormatter.format(new Date(value));
 }
 
 export function formatMonth(value: string) {
+  if (!value) return "Schedule pending";
   return monthFormatter.format(new Date(value));
 }
 

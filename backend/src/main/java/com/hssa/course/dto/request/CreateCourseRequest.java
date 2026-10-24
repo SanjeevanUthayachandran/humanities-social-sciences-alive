@@ -32,6 +32,7 @@ public class CreateCourseRequest {
     private UUID thumbnailMediaId;
     private UUID bannerMediaId;
     private UUID promotionalVideoId;
+    private String cardImageUrl;
     
     private List<String> tags;
     private List<UUID> instructorIds;

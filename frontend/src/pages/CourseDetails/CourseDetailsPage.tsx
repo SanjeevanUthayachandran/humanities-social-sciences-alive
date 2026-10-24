@@ -1,14 +1,15 @@
 import { ArrowLeft, BookOpen, CheckCircle2, Clock, MonitorPlay, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import CtaSection from "@/components/common/CtaSection";
 import Container from "@/components/common/Container";
 import PageBanner from "@/components/common/PageBanner";
 import SectionHeader from "@/components/common/SectionHeader";
+import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/buttonVariants";
 import PageLoader from "@/components/common/PageLoader";
 import { useContent } from "@/hooks/useContent";
-import { fetchCourseBySlug } from "@/services/contentApi";
+import { enrollInCourse, fetchCourseBySlug } from "@/services/contentApi";
+import { getRequestErrorMessage } from "@/services/requestError";
 import type { Course } from "@/types/content";
 
 export default function CourseDetailsPage() {
@@ -17,6 +18,23 @@ export default function CourseDetailsPage() {
   const fallbackCourse = courses.find((item) => item.slug === slug);
   const [course, setCourse] = useState<Course | undefined>(fallbackCourse);
   const [isLoading, setIsLoading] = useState(!fallbackCourse);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [enrollmentFeedback, setEnrollmentFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const isAuthenticated = Boolean(localStorage.getItem("hssa_access_token") ?? sessionStorage.getItem("hssa_access_token"));
+
+  async function handleEnrollment() {
+    if (!course) return;
+    setIsEnrolling(true);
+    setEnrollmentFeedback(null);
+    try {
+      await enrollInCourse(course.id);
+      setEnrollmentFeedback({ type: "success", text: "You are enrolled in this course." });
+    } catch (error) {
+      setEnrollmentFeedback({ type: "error", text: getRequestErrorMessage(error, "Enrollment could not be completed.") });
+    } finally {
+      setIsEnrolling(false);
+    }
+  }
 
   useEffect(() => {
     if (!slug) return;
@@ -69,13 +87,13 @@ export default function CourseDetailsPage() {
           <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
             <div>
               <SectionHeader
-                eyebrow="Course details"
-                title="What learners will build."
-                description="This UI-only detail page is ready for enrollment, pricing, lesson, instructor, and payment data once the backend is connected."
+                eyebrow="Course focus"
+                title="What this course explores."
+                description="Topics and modules are loaded from the published course record."
               />
               {course.outcomes.length > 0 ? <div className="grid gap-4 sm:grid-cols-2">
                 {course.outcomes.map((outcome) => (
-                  <article key={outcome} className="flex gap-3 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                  <article key={outcome} className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-6 card-lift">
                     <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
                     <p className="text-sm leading-6 text-slate-700">{outcome}</p>
                   </article>
@@ -85,12 +103,12 @@ export default function CourseDetailsPage() {
               {course.modules.length > 0 ? <div className="mt-12">
                 <SectionHeader
                   eyebrow="Modules"
-                  title="Syllabus preview."
-                  description="A concise module outline keeps the public page useful while detailed lessons remain ready for a future LMS."
+                  title="Course structure."
+                  description="Follow the published module sequence from foundation to application."
                 />
                 <div className="grid gap-4">
                   {course.modules.map((module, index) => (
-                    <article key={module} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                    <article key={module} className="rounded-2xl border border-slate-200 bg-white p-6 card-lift">
                       <span className="text-sm font-bold text-blue-700">Module {index + 1}</span>
                       <h3 className="mt-2 text-lg font-bold text-slate-950">{module}</h3>
                     </article>
@@ -122,25 +140,18 @@ export default function CourseDetailsPage() {
               <div className="mt-6 rounded-lg bg-blue-50 p-4">
                 <p className="text-sm font-semibold text-blue-800">{course.priceLabel}</p>
               </div>
-              <button
-                type="button"
-                className="mt-5 h-11 w-full rounded-md bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-3 focus:ring-blue-200"
-              >
-                Register Interest
-              </button>
+              {isAuthenticated ? (
+                <Button type="button" onClick={handleEnrollment} disabled={isEnrolling || enrollmentFeedback?.type === "success"} className="mt-5 h-11 w-full bg-blue-600 hover:bg-blue-700">
+                  {isEnrolling ? "Enrolling..." : enrollmentFeedback?.type === "success" ? "Enrolled" : "Enrol Now"}
+                </Button>
+              ) : (
+                <Link to="/login" className={buttonVariants({ className: "mt-5 h-11 w-full bg-blue-600 hover:bg-blue-700" })}>Login to Enrol</Link>
+              )}
+              {enrollmentFeedback ? <p role="status" className={`mt-3 text-sm font-semibold ${enrollmentFeedback.type === "success" ? "text-emerald-700" : "text-red-700"}`}>{enrollmentFeedback.text}</p> : null}
             </aside>
           </div>
         </Container>
       </section>
-
-      <CtaSection
-        title="Need help choosing a course?"
-        description="Contact the platform team for guidance on language, research, school subject, and professional skill pathways."
-        primaryLabel="Contact Us"
-        primaryPath="/contact"
-        secondaryLabel="Browse All"
-        secondaryPath="/courses"
-      />
     </>
   );
 }

@@ -1,14 +1,28 @@
 import { createContext } from "react";
-import type { Course, EventItem, FaqItem, ResearchItem, Workshop } from "@/types/content";
+import type {
+  BookItem,
+  ContactOffice,
+  Course,
+  EventItem,
+  FaqItem,
+  PublicationItem,
+  PublicMetrics,
+  ResearchItem,
+  Workshop,
+} from "@/types/content";
 
 export interface ContentState {
   courses: Course[];
   researchItems: ResearchItem[];
   workshops: Workshop[];
   events: EventItem[];
+  publications: PublicationItem[];
+  books: BookItem[];
+  offices: ContactOffice[];
   faqs: FaqItem[];
+  metrics: PublicMetrics;
   isLoading: boolean;
-  isUsingFallback: boolean;
+  failedResources: string[];
 }
 
 export const ContentContext = createContext<ContentState | null>(null);

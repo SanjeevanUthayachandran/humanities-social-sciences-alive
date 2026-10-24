@@ -1,6 +1,6 @@
 package com.hssa.contact.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.contact.dto.request.ContactRequest;
 import com.hssa.contact.dto.request.ReplyRequest;
 import com.hssa.contact.dto.response.ContactResponse;
@@ -58,7 +58,7 @@ public class ContactController {
     public ResponseEntity<Void> assignMessage(
             @PathVariable UUID id,
             @RequestParam UUID assigneeId,
-            @AuthenticationPrincipal User assigner) {
+            @AuthenticationPrincipal CustomUserDetails assigner) {
         contactService.assignMessage(id, assigneeId, assigner.getId());
         return ResponseEntity.ok().build();
     }
@@ -67,7 +67,7 @@ public class ContactController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('SUPPORT')")
     public ResponseEntity<Void> resolveMessage(
             @PathVariable UUID id,
-            @AuthenticationPrincipal User resolver) {
+            @AuthenticationPrincipal CustomUserDetails resolver) {
         contactService.resolveMessage(id, resolver.getId());
         return ResponseEntity.ok().build();
     }
@@ -77,7 +77,7 @@ public class ContactController {
     public ResponseEntity<Void> replyToMessage(
             @PathVariable UUID id,
             @Valid @RequestBody ReplyRequest request,
-            @AuthenticationPrincipal User replier) {
+            @AuthenticationPrincipal CustomUserDetails replier) {
         contactService.replyToMessage(id, request, replier.getId());
         return ResponseEntity.ok().build();
     }

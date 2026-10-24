@@ -19,6 +19,7 @@ public class CourseSummaryResponse {
     private String level;
     private String status;
     private UUID thumbnailMediaId;
+    private String cardImageUrl;
     private Boolean isFree;
     private BigDecimal price;
     private BigDecimal discountedPrice;

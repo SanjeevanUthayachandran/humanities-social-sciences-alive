@@ -9,6 +9,10 @@ spring:
       ddl-auto: create-drop
     show-sql: false
     database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        hbm2ddl:
+          create_namespaces: true
   security:
     enabled: false
 
@@ -21,3 +25,8 @@ logging:
   level:
     root: WARN
     com.hssa: DEBUG
+
+management:
+  health:
+    mail:
+      enabled: false

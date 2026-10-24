@@ -1,6 +1,6 @@
 package com.hssa.literary.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.literary.dto.request.CommentRequest;
 import com.hssa.literary.dto.response.LiteraryCommentResponse;
 import com.hssa.literary.service.LiteraryInteractionService;
@@ -24,28 +24,28 @@ public class LiteraryInteractionController {
 
     @PostMapping("/{id}/like")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> like(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> like(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         interactionService.likeArticle(id, user.getId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}/like")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> unlike(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> unlike(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         interactionService.unlikeArticle(id, user.getId());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/favorite")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> bookmark(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> bookmark(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         interactionService.bookmarkArticle(id, user.getId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}/favorite")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> unbookmark(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> unbookmark(@PathVariable UUID id, @AuthenticationPrincipal CustomUserDetails user) {
         interactionService.unbookmarkArticle(id, user.getId());
         return ResponseEntity.noContent().build();
     }
@@ -55,7 +55,7 @@ public class LiteraryInteractionController {
     public ResponseEntity<LiteraryCommentResponse> addComment(
             @PathVariable UUID id,
             @Valid @RequestBody CommentRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(interactionService.addComment(id, request, user.getId()));
     }
 

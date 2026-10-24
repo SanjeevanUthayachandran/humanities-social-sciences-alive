@@ -100,6 +100,7 @@ public class CourseServiceImpl implements CourseService {
                 .thumbnailMediaId(request.getThumbnailMediaId())
                 .bannerMediaId(request.getBannerMediaId())
                 .promotionalVideoId(request.getPromotionalVideoId())
+                .cardImageUrl(request.getCardImageUrl())
                 .metaTitle(request.getMetaTitle())
                 .metaDescription(request.getMetaDescription())
                 .metaKeywords(request.getMetaKeywords())
@@ -183,6 +184,7 @@ public class CourseServiceImpl implements CourseService {
         if (request.getThumbnailMediaId() != null) course.setThumbnailMediaId(request.getThumbnailMediaId());
         if (request.getBannerMediaId() != null) course.setBannerMediaId(request.getBannerMediaId());
         if (request.getPromotionalVideoId() != null) course.setPromotionalVideoId(request.getPromotionalVideoId());
+        if (request.getCardImageUrl() != null) course.setCardImageUrl(request.getCardImageUrl());
         
         if (request.getMetaTitle() != null) course.setMetaTitle(request.getMetaTitle());
         if (request.getMetaDescription() != null) course.setMetaDescription(request.getMetaDescription());
@@ -320,6 +322,17 @@ public class CourseServiceImpl implements CourseService {
                 .map(this::toCourseSummaryResponse);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<CourseSummaryResponse> getInstructorCourses(UUID instructorId) {
+        return instructorRepository.findAllByInstructorId(instructorId).stream()
+                .map(CourseInstructor::getCourse)
+                .filter(course -> course.getDeletedAt() == null)
+                .distinct()
+                .map(this::toCourseSummaryResponse)
+                .toList();
+    }
+
     private CourseResponse toCourseResponse(Course course) {
         return CourseResponse.builder()
                 .id(course.getId())
@@ -335,6 +348,7 @@ public class CourseServiceImpl implements CourseService {
                 .thumbnailMediaId(course.getThumbnailMediaId())
                 .bannerMediaId(course.getBannerMediaId())
                 .promotionalVideoId(course.getPromotionalVideoId())
+                .cardImageUrl(course.getCardImageUrl())
                 .isFree(course.getIsFree())
                 .price(course.getPrice())
                 .currency(course.getCurrency())
@@ -360,6 +374,7 @@ public class CourseServiceImpl implements CourseService {
                 .level(course.getLevel().name())
                 .status(course.getStatus().name())
                 .thumbnailMediaId(course.getThumbnailMediaId())
+                .cardImageUrl(course.getCardImageUrl())
                 .isFree(course.getIsFree())
                 .price(course.getPrice())
                 .discountedPrice(course.getDiscountedPrice())
@@ -382,6 +397,7 @@ public class CourseServiceImpl implements CourseService {
                 .thumbnailMediaId(course.getThumbnailMediaId())
                 .bannerMediaId(course.getBannerMediaId())
                 .promotionalVideoId(course.getPromotionalVideoId())
+                .cardImageUrl(course.getCardImageUrl())
                 .isFree(course.getIsFree())
                 .price(course.getPrice())
                 .discountedPrice(course.getDiscountedPrice())

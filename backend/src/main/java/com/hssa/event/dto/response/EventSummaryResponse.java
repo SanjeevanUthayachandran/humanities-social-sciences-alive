@@ -16,6 +16,7 @@ public class EventSummaryResponse {
     private String description;
     private String eventType;
     private String status;
+    private UUID coverMediaId;
     private String locationType;
     private String locationDetails;
     private LocalDateTime startTime;

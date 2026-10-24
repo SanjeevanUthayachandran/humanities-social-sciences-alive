@@ -1,6 +1,6 @@
 package com.hssa.workshop.controller;
 
-import com.hssa.auth.entity.User;
+import com.hssa.security.dto.CustomUserDetails;
 import com.hssa.workshop.dto.request.AttendanceRequest;
 import com.hssa.workshop.dto.request.WorkshopFeedbackRequest;
 import com.hssa.workshop.dto.response.WorkshopRegistrationResponse;
@@ -25,11 +25,18 @@ public class WorkshopRegistrationController {
     private final WorkshopRegistrationService registrationService;
     private final WorkshopFeedbackService feedbackService;
 
+    @GetMapping("/registrations/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<WorkshopRegistrationResponse>> getMyRegistrations(
+            @AuthenticationPrincipal CustomUserDetails user) {
+        return ResponseEntity.ok(registrationService.getUserRegistrations(user.getId()));
+    }
+
     @PostMapping("/{id}/register")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<WorkshopRegistrationResponse> register(
             @PathVariable UUID id,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(registrationService.register(id, user.getId()));
     }
 
@@ -37,7 +44,7 @@ public class WorkshopRegistrationController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> cancelRegistration(
             @PathVariable UUID id,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         registrationService.cancelRegistration(id, user.getId());
         return ResponseEntity.noContent().build();
     }
@@ -56,7 +63,7 @@ public class WorkshopRegistrationController {
     public ResponseEntity<Void> recordAttendance(
             @PathVariable UUID id,
             @Valid @RequestBody AttendanceRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         registrationService.recordAttendance(id, request, user.getId());
         return ResponseEntity.ok().build();
     }
@@ -72,7 +79,7 @@ public class WorkshopRegistrationController {
     public ResponseEntity<Void> submitFeedback(
             @PathVariable UUID id,
             @Valid @RequestBody WorkshopFeedbackRequest request,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         feedbackService.submitFeedback(id, request, user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

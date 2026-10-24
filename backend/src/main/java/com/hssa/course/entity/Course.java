@@ -66,6 +66,9 @@ public class Course extends BaseEntity {
     @Column(name = "promotional_video_id")
     private UUID promotionalVideoId;
 
+    @Column(name = "card_image_url", length = 500)
+    private String cardImageUrl;
+
     @Column(name = "is_free", nullable = false)
     @Builder.Default
     private Boolean isFree = false;
